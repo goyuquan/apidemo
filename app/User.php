@@ -12,28 +12,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 {
     use Authenticatable, Authorizable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+
     protected $fillable = [
-        'name', 'email', 'password'
+        'phone', 'password', 'name'
     ];
 
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
     protected $hidden = [
-        'password',
+        'password', 'rememberToken'
     ];
 
-    public function todo()
- 
+    public function contacts()
     {
-       return $this->hasMany('App\Todo','user_id');
+        return $this->hasMany('App\Contact');
     }
-
 }
