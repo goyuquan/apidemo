@@ -18,7 +18,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password'
+        'name', 'email',
     ];
 
     /**
@@ -29,11 +29,4 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password',
     ];
-
-    public function todo()
- 
-    {
-       return $this->hasMany('App\Todo','user_id');
-    }
-
 }
