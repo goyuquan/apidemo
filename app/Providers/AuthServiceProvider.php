@@ -30,6 +30,7 @@ class AuthServiceProvider extends ServiceProvider
           	    $key = $request->header('Authorization');
           	    $user = User::where('api_key', $key)->first();
 
+                dd(new());
           	    if(!empty($user)) {
                 		$request->request->add(['userid' => $user->id]);
                 		return $user;
