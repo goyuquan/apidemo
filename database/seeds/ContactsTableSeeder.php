@@ -11,6 +11,6 @@ class ContactsTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Contact::class, 60)->create();
+        factory(App\Contact::class, 206)->create();
     }
 }
