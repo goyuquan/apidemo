@@ -4,6 +4,7 @@ use App\User;
 use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Carbon;
 /**
 * Class UserController
 */
