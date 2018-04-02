@@ -17,7 +17,8 @@ class UserController extends Controller
   */
   public function index()
   {
-    return now();
+    $now = now();
+    return $now;
     return response(['data' => User::all()->toArray()]);
   }
   /**
