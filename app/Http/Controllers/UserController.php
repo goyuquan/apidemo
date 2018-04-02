@@ -127,14 +127,14 @@ class UserController extends Controller
   */
   protected static function userExist($id)
   {
-    return User::findOrFail($id);
+      return User::findOrFail($id);
   }
 
 
-  public function authenticate(Request $request)
-   {
+    public function authenticate(Request $request)
+    {
        $this->validate($request, [
-           'email' => 'required',
+           'phone' => 'required',
            'password' => 'required'
         ]);
 
@@ -152,9 +152,8 @@ class UserController extends Controller
   public function logout($id)
     {
         if(User::where('id', $id)->update(['api_key' => '']))
-	{
-		 return response()->json(['status' => 'success'], 200);
-	}
-
+      	{
+      		  return response()->json(['status' => 'success'], 200);
+      	}
     }
 }
