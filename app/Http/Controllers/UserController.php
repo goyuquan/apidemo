@@ -16,7 +16,7 @@ class UserController extends Controller
   */
   public function index()
   {
-    return response(['data' => User::all()->toArray()]);
+    return response(['time' => now(), 'data' => User::all()->toArray()]);
   }
   /**
   * Create a new user resource.
