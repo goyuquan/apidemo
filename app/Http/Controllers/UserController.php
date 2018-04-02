@@ -3,7 +3,6 @@ namespace App\Http\Controllers;
 use App\User;
 use Validator;
 use Illuminate\Http\Request;
-//use Illuminate\Hashing\BcryptHasher;
 use Illuminate\Support\Facades\Hash;
 /**
 * Class UserController
@@ -146,7 +145,7 @@ class UserController extends Controller
             User::where('email', $request->input('email'))->update(['api_key' => "$apikey"]);
             return response()->json(['status' => 'success','api_key' => $apikey, 'data' => $user]);
         }else{
-            return response()->json(['status' => 'fail'],401); 
+            return response()->json(['status' => 'fail'],401);
         }
     }
 
@@ -156,6 +155,6 @@ class UserController extends Controller
 	{
 		 return response()->json(['status' => 'success'], 200);
 	}
-	
+
     }
 }
