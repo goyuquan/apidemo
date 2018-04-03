@@ -61,7 +61,7 @@ $app->singleton(
 
 $app->middleware([
    App\Http\Middleware\HttpResponseHeadersMiddleware::class //响应头处理
-   App\Http\Middleware\CORS::class //响应头处理
+   // App\Http\Middleware\CORS::class //响应头处理
 ]);
 
 $app->routeMiddleware([
