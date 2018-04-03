@@ -10,9 +10,8 @@ use Illuminate\Support\Carbon;
 class UserController extends Controller
 {
 
-    public function index(Request $request)
+    public function index()
     {
-        return dd($request);
         return response(['data' => User::all()->toArray()]);
     }
 
