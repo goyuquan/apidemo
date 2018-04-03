@@ -18,7 +18,7 @@ $router->get('/', function () use ($router) {
 
 $router->group([ 'prefix' => '/api' ], function ($router) {
 
-    $router->group( [ 'prefix' => '/users' ], function ($router) {
+    $router->group( [ 'prefix' => '/user' ], function ($router) {
         $router->get('/', 'UserController@index');
         $router->post('/', 'UserController@store');
         $router->get('/{id}', 'UserController@show');
