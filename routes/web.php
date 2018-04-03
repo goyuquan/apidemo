@@ -18,7 +18,7 @@ $router->get('/', function () use ($router) {
 
 $router->group([ 'prefix' => '/api' ], function ($router) {
 
-    $router->group( [ 'prefix' => '/user' ], function ($router) {
+    $router->group([ 'prefix' => '/user' ], function ($router) {
         $router->get('/login','UserController@login');
         $router->get('/logout/{id}','UserController@logout');
         $router->get('/', 'UserController@index');
