@@ -29,16 +29,16 @@ class AuthServiceProvider extends ServiceProvider
             if ($request->header('Authorization')) {
                 $key = $request->header('Authorization');
                 $user = User::where('remember_token', $key)->first();
-                // $user->update('updated_at', Carbon::now()->toDateTimeString());
+                // $user->update('updated_at', Carbon::now()->toDateTimeString()); //TODO
 
                 if(!empty($user)) {
                     $request->request->add(['userid' => $user->id]);
                     return $user;
                 } else {
-                    return null;
+                    // return null;
                 }
             } else {
-                return null;
+                // return null;
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Unauthorized'
