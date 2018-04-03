@@ -31,7 +31,7 @@ $router->group([ 'prefix' => '/api' ], function ($router) {
         $router->get('/logout/{id}','UserController@logout');
         // $router->get('/', 'UserController@index');
         $router->post('/', 'UserController@store');
-        $router->get('/{id}', 'UserController@show');
+        // $router->get('/{id}', 'UserController@show');
         $router->put('/{id}', 'UserController@update');
         $router->delete('/{id}', 'UserController@delete');
     });
