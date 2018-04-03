@@ -29,15 +29,15 @@ $router->group(
 
 
 $router->group(
-	[
-	     'prefix' => '/api'
-	], function ($router) {
-		$router->get('/login','UserController@authenticate');
-		$router->get('/logout/{id}','UserController@logout');
-		$router->post('/todo','TodoController@store');
-		$router->get('/todo', 'TodoController@index');
-		$router->get('/todo/{id}', 'TodoController@show');
-		$router->put('/todo/{id}', 'TodoController@update');
-		$router->delete('/todo/{id}', 'TodoController@destroy');
-	}
+    [
+        'prefix' => '/api'
+    ], function ($router) {
+        $router->get('/login','UserController@authenticate');
+        $router->get('/logout/{id}','UserController@logout');
+        $router->post('/todo','TodoController@store');
+        $router->get('/todo', 'TodoController@index');
+        $router->get('/todo/{id}', 'TodoController@show');
+        $router->put('/todo/{id}', 'TodoController@update');
+        $router->delete('/todo/{id}', 'TodoController@destroy');
+    }
 );
