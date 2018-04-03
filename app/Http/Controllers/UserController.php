@@ -16,17 +16,14 @@ class UserController extends Controller
   }
 
 
-
   public function store(Request $request)
   {
     $this->validate($request, [
-      'name' => 'required',
       'phone' => 'required|unique:users|phone',
       'password' => 'required'
     ]);
 
     $data = [
-      'name' => $request->input('name'),
       'phone' => $request->input('phone'),
       'password' => Hash::make($request->input('password'))
     ];
@@ -126,4 +123,5 @@ class UserController extends Controller
       return response()->json(['status' => 'success'], 200);
     }
   }
+
 }
