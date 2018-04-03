@@ -28,7 +28,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->app['auth']->viaRequest('api', function ($request) {
     	       if ($request->header('Authorization')) {
           	    $key = $request->header('Authorization');
-          	    $user = User::where('api_key', $key)->first();
+          	    $user = User::where('remember_token', $key)->first();
                 $user->update('updated_at', Carbon::now()->toDateTimeString());
 
           	    if(!empty($user)) {

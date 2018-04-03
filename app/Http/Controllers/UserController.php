@@ -108,8 +108,8 @@ class UserController extends Controller
     $user = User::where('phone', $request->input('phone'))->first();
     if(Hash::check($request->input('password'), $user->password)){
       $apikey = base64_encode(str_random(40));
-      User::where('phone', $request->input('phone'))->update(['api_key' => "$apikey"]);
-      return response()->json(['status' => 'success','api_key' => $apikey, 'data' => $user]);
+      User::where('phone', $request->input('phone'))->update(['remember_token' => "$apikey"]);
+      return response()->json(['status' => 'success','remember_token' => $apikey, 'data' => $user]);
     }else{
       return response()->json(['status' => 'fail'],401);
     }
@@ -118,7 +118,7 @@ class UserController extends Controller
 
   public function logout($id)
   {
-    if(User::where('id', $id)->update(['api_key' => '']))
+    if(User::where('id', $id)->update(['remember_token' => '']))
     {
       return response()->json(['status' => 'success'], 200);
     }
