@@ -35,10 +35,10 @@ class AuthServiceProvider extends ServiceProvider
                     $request->request->add(['userid' => $user->id]);
                     return $user;
                 } else {
-                    // return null;
+                    return null;
                 }
             } else {
-                // return null;
+                return null;
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Unauthorized'
