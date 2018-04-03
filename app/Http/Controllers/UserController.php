@@ -17,7 +17,7 @@ class UserController extends Controller
   */
   public function index()
   {
-    return new DateTime('now');
+    // return new DateTime('now');
     return response(['data' => User::all()->toArray()]);
   }
   /**
