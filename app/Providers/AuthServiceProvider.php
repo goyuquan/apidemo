@@ -41,6 +41,6 @@ class AuthServiceProvider extends ServiceProvider
                     'message' => 'Unauthorized'
                 ], 401);
             }
-        })
+        });
     }
 }
