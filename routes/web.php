@@ -16,7 +16,6 @@ $router->get('/', function () use ($router) {
 });
 
 
-
 $router->group([ 'prefix' => '/api' ], function ($router) {
 
     $router->group( [ 'prefix' => '/users' ], function ($router) {
@@ -25,10 +24,10 @@ $router->group([ 'prefix' => '/api' ], function ($router) {
         $router->get('/{id}', 'UserController@show');
         $router->put('/{id}', 'UserController@update');
         $router->delete('/{id}', 'UserController@delete');
+        $router->get('/login','UserController@login');
+        $router->get('/logout/{id}','UserController@logout');
     });
-    
-    $router->get('/login','UserController@authenticate');
-    $router->get('/logout/{id}','UserController@logout');
+
     $router->post('/todo','TodoController@store');
     $router->get('/todo', 'TodoController@index');
     $router->get('/todo/{id}', 'TodoController@show');
