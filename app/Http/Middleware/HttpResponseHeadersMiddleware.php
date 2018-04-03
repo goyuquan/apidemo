@@ -10,6 +10,7 @@ class HttpResponseHeadersMiddleware
     {
         $response = $next($request);
 
+        $response->header("Access-Control-Expose-Headers", "Authorization, X-Custom");
         $response->header('Authorization', '______________________________');
 
         return $response;
