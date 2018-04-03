@@ -17,7 +17,7 @@ class UserController extends Controller
   */
   public function index()
   {
-    return Carbon::createFromDate(null, null, null);
+    return Carbon::createFromDate(null, null, null, null, null, null);
     return response(['data' => User::all()->toArray()]);
   }
   /**
