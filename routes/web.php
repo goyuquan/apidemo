@@ -28,9 +28,13 @@ $router->group([ 'prefix' => '/api' ], function ($router) {
         $router->delete('/{id}', 'UserController@delete');
     });
 
-    $router->post('/todo','TodoController@store');
-    $router->get('/todo', 'TodoController@index');
-    $router->get('/todo/{id}', 'TodoController@show');
-    $router->put('/todo/{id}', 'TodoController@update');
-    $router->delete('/todo/{id}', 'TodoController@destroy');
+    $router->group(['middleware' => 'auth'], function () use ($router) {
+        $router->get('/user/list', 'UserController@index');
+        $router->post('/todo','TodoController@store');
+        $router->get('/todo', 'TodoController@index');
+        $router->get('/todo/{id}', 'TodoController@show');
+        $router->put('/todo/{id}', 'TodoController@update');
+        $router->delete('/todo/{id}', 'TodoController@destroy');
+    });
+
 });
