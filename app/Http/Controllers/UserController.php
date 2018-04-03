@@ -109,7 +109,7 @@ class UserController extends Controller
     ]);
 
     $user = User::where('phone', $request->input('phone'))->first();
-return Hash::check($request->input('password');
+        return Hash::check($request->input('password'));
     if(Hash::check($request->input('password'), $user->password)){
       $apikey = base64_encode(str_random(40));
       User::where('phone', $request->input('phone'))->update(['api_key' => "$apikey"]);
