@@ -17,7 +17,7 @@ class UserController extends Controller
   */
   public function index()
   {
-    return new Carbon('now');  
+    return Carbon::parse('now');   
     return response(['data' => User::all()->toArray()]);
   }
   /**
