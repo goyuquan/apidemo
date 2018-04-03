@@ -29,8 +29,8 @@ class AuthServiceProvider extends ServiceProvider
     	       if ($request->header('Authorization')) {
           	    $key = $request->header('Authorization');
           	    $user = User::where('api_key', $key)->first();
-                $user->update('updated_at', Carbon::now()->toDateTimeString());
-                
+                // $user->update('updated_at', Carbon::now()->toDateTimeString());
+
           	    if(!empty($user)) {
                 		$request->request->add(['userid' => $user->id]);
                 		return $user;
