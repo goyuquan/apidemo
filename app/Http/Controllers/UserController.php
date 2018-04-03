@@ -109,8 +109,8 @@ class UserController extends Controller
     ]);
 
     $user = User::where('phone', $request->input('phone'))->first();
-    return Hash::make($request->input('password')).'++++'.$user->password;
-    if(Hash::check($request->input('password'), '$2y$10$xec5fOSzfhyMciLdCqARTufWItm5akzf5Zt2nob4zDaHdzZB0JNfO')){
+    return Hash::make($request->input('password'), '$2y$10$xec5fOSzfhyMciLdCqARTufWItm5akzf5Zt2nob4zDaHdzZB0JNfO');
+    if(Hash::check($request->input('password'), $user->password)){
       $apikey = base64_encode(str_random(40));
       User::where('phone', $request->input('phone'))->update(['api_key' => "$apikey"]);
       return response()->json(['status' => 'success','api_key' => $apikey, 'data' => $user]);
