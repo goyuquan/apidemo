@@ -17,24 +17,27 @@ $router->get('/', function () use ($router) {
 
 
 $router->group([ 'prefix' => '/api' ], function ($router) {
+
     $router->group(['middleware' => 'auth'], function () use ($router) {
-        $router->get('/user/list', 'UserController@index');
+        $router->get('/users/list', 'UserController@index');
         $router->post('/todo','TodoController@store');
         $router->get('/todo', 'TodoController@index');
         $router->get('/todo/{id}', 'TodoController@show');
         $router->put('/todo/{id}', 'TodoController@update');
         $router->delete('/todo/{id}', 'TodoController@destroy');
+
+        $router->group([ 'prefix' => '/auth' ], function ($router) {
+            $router->get('/login','UserController@login');
+            $router->get('/logout/{id}','UserController@logout');
+        });
     });
 
     $router->group([ 'prefix' => '/user' ], function ($router) {
-        $router->get('/login','UserController@login');
-        $router->get('/logout/{id}','UserController@logout');
-        // $router->get('/', 'UserController@index');
+        $router->get('/', 'UserController@index');
         $router->post('/', 'UserController@store');
-        // $router->get('/{id}', 'UserController@show');
+        $router->get('/{id}', 'UserController@show');
         $router->put('/{id}', 'UserController@update');
         $router->delete('/{id}', 'UserController@delete');
     });
-
 
 });
