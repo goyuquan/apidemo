@@ -32,7 +32,6 @@ class AuthServiceProvider extends ServiceProvider
 
                 if(!empty($user)) {
                     $request->request->add(['userid' => $user->id]);
-                    // $user->update('updated_at', Carbon::now()->toDateTimeString()); //TODO
                     return $user;
                 } else {
                     return null;
