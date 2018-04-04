@@ -111,9 +111,9 @@ class UserController extends Controller
             User::where('phone', $request->input('phone'))->update(['remember_token' => $token]);
             return response()->json(['status' => 'success', 'data' => $user])
                                 ->withHeaders([
-                                    'Authorization' => $token,
+                                    'Authorization' => "_______________________",
                                     'login' => 'thisi s login'
-                                ]);;
+                                ]);
         }else{
             return response()->json(['status' => 'fail'],401);
         }
