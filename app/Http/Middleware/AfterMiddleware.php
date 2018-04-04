@@ -13,7 +13,7 @@ class AfterMiddleware
 
         $user = Auth::user();
 
-        dd($user);
+        dd($user->phone);
 
         if($user) {
             $token = base64_encode(str_random(40));
