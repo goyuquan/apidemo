@@ -40,7 +40,7 @@ class AuthServiceProvider extends ServiceProvider
             } else {
                 return null;
                 return response()->json([
-                    'status' => 'error',
+                    'status' => 'errorrrr',
                     'message' => 'Unauthorized'
                 ], 401);
             }
