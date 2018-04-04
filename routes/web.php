@@ -25,9 +25,8 @@ $router->group([ 'prefix' => '/api' ], function ($router) {
         $router->get('/todo/{id}', 'TodoController@show');
         $router->put('/todo/{id}', 'TodoController@update');
         $router->delete('/todo/{id}', 'TodoController@destroy');
-
     });
-    
+
     $router->group([ 'prefix' => '/auth' ], function ($router) {
         $router->get('/login','UserController@login');
         $router->get('/logout/{id}','UserController@logout');

@@ -60,12 +60,12 @@ $app->singleton(
 */
 
 $app->middleware([
-   App\Http\Middleware\HttpResponseHeadersMiddleware::class //响应头处理
+   App\Http\Middleware\AfterMiddleware::class //响应头处理
 ]);
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
-    'resHeader' => App\Http\Middleware\HttpResponseHeadersMiddleware::class,
+    'after' => App\Http\Middleware\AfterMiddleware::class,
 ]);
 
 /*
