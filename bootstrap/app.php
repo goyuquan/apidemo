@@ -60,7 +60,7 @@ $app->singleton(
 */
 
 $app->middleware([
-   App\Http\Middleware\AfterMiddleware::class //响应头处理
+   // App\Http\Middleware\AfterMiddleware::class //响应头处理
 ]);
 
 $app->routeMiddleware([
