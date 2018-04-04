@@ -108,8 +108,12 @@ class UserController extends Controller
         $user = User::where('phone', $request->input('phone'))->first();
         if(Hash::check($request->input('password'), $user->password)){
             $token = base64_encode(str_random(40));
-            // User::where('phone', $request->input('phone'))->update(['remember_token' => $token]);
-            return response()->json(['status' => 'success', 'data' => $user]);
+            User::where('phone', $request->input('phone'))->update(['remember_token' => $token]);
+            return response()->json(['status' => 'success', 'data' => $user])
+                                ->withHeaders([
+                                    'Authorization' => $token,
+                                    'login' => 'thisi s login'
+                                ]);;
         }else{
             return response()->json(['status' => 'fail'],401);
         }
