@@ -13,6 +13,8 @@ class HttpResponseHeadersMiddleware
 
         $user = Auth::user();
         $token = base64_encode(str_random(40));
+
+        dump($user);
         $user->update([
             'remember_token' => $token,
             // 'updated_at', Carbon::now()->toDateTimeString()
