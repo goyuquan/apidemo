@@ -13,6 +13,18 @@ class UserController extends Controller
     public function index()
     {
         return response(['data' => User::all()->toArray()]);
+
+        try {
+            $user = User::all();
+        } catch(\Exception $e) {
+            $user = $e
+        }
+        return response(
+            [
+                "data" => $user
+            ]
+        );
+
     }
 
 
@@ -106,7 +118,7 @@ class UserController extends Controller
         ]);
 
         $user = User::where('phone', $request->input('phone'))->first();
-        
+
         if(Hash::check($request->input('password'), $user->password)){
             $token = base64_encode(str_random(40));
             User::where('phone', $request->input('phone'))->update(['remember_token' => $token]);
