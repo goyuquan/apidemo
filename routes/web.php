@@ -26,10 +26,11 @@ $router->group([ 'prefix' => '/api' ], function ($router) {
         $router->put('/todo/{id}', 'TodoController@update');
         $router->delete('/todo/{id}', 'TodoController@destroy');
 
-        $router->group([ 'prefix' => '/auth' ], function ($router) {
-            $router->get('/login','UserController@login');
-            $router->get('/logout/{id}','UserController@logout');
-        });
+    });
+    
+    $router->group([ 'prefix' => '/auth' ], function ($router) {
+        $router->get('/login','UserController@login');
+        $router->get('/logout/{id}','UserController@logout');
     });
 
     $router->group([ 'prefix' => '/user' ], function ($router) {
