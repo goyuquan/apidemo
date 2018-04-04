@@ -17,7 +17,7 @@ class UserController extends Controller
         try {
             $user = User::all();
         } catch(\Exception $e) {
-            $user = $e
+            $user = $e;
         }
         return response(
             [
