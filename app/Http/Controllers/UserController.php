@@ -13,18 +13,6 @@ class UserController extends Controller
     public function index()
     {
         return response(['data' => User::all()->toArray()]);
-
-        try {
-            $user = User::all();
-        } catch(\Exception $e) {
-            $user = $e;
-        }
-        return response(
-            [
-                "data" => $user
-            ]
-        );
-
     }
 
 
