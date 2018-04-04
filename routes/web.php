@@ -18,7 +18,7 @@ $router->get('/', function () use ($router) {
 
 $router->group([ 'prefix' => '/api' ], function ($router) {
 
-    $router->group(['middleware' => 'auth'], function () use ($router) {
+    $router->group(['middleware' => ['auth', 'after']], function () use ($router) {
         $router->get('/users/list', 'UserController@index');
         $router->post('/todo','TodoController@store');
         $router->get('/todo', 'TodoController@index');
