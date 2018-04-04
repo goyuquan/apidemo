@@ -14,6 +14,7 @@ class AfterMiddleware
         $user = Auth::user();
 
         if(!empty($user)) {
+            dd('2333333333333')
             $token = base64_encode(str_random(40));
             $user->update([
                 'remember_token' => $token,
