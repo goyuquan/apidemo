@@ -120,7 +120,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'fail',
                 'message' => 'Unauthorized'
-            ],401);
+            ], 200);
         }
     }
 
