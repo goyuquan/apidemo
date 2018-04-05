@@ -114,12 +114,12 @@ class UserController extends Controller
 
             return response()->json(['status' => 'success', 'data' => $user])
                                 ->withHeaders([
-                                    'Unauthorized' => $token,
+                                    'Authorization' => $token,
                                 ]);
         }else{
             return response()->json([
                 'status' => 'fail',
-                'message' => 'fail'
+                'message' => 'Unauthorized'
             ],401);
         }
     }
