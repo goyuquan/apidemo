@@ -22,6 +22,7 @@ class AfterMiddleware
 
             $response->header('Authorization', $token);
         }
+        $response->header('AAAAAAAAAAAAAAAA', '_____________');
 
         return $response;
     }
