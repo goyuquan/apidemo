@@ -109,13 +109,18 @@ class UserController extends Controller
 
         if(Hash::check($request->input('password'), $user->password)){
             $token = base64_encode(str_random(40));
-            User::where('phone', $request->input('phone'))->update(['remember_token' => $token]);
+            User::where('phone', $request->input('phone'))
+                        ->update(['remember_token' => $token]);
+
             return response()->json(['status' => 'success', 'data' => $user])
                                 ->withHeaders([
-                                    'Authorization' => $token,
+                                    'Unauthorized' => $token,
                                 ]);
         }else{
-            return response()->json(['status' => 'fail'],401);
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'fail'
+            ],401);
         }
     }
 
