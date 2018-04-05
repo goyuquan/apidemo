@@ -112,7 +112,7 @@ class UserController extends Controller
             User::where('phone', $request->input('phone'))
                         ->update(['remember_token' => $token]);
 
-            return response()->json(['status' => 'success', 'data' => $user])
+            return response()->json(['status' => 'success', 'data' => $user], 200)
                                 ->withHeaders([
                                     'Authorization' => $token,
                                 ]);
