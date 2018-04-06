@@ -17,7 +17,7 @@ class CreateOrdersTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('contact_id');
-            $table->boolean('status');
+            $table->unsignedTinyInteger('status');
             $table->string('period');
             $table->string('delivery_time');
             $table->json('product');
