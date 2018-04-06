@@ -20,7 +20,10 @@ class AfterMiddleware
                 // 'updated_at', Carbon::now()->toDateTimeString(),
             ]);
 
-            $response->header('Authorization', $token);
+            $response->header([
+                'Authorization' => $token,
+                'phone' => $user->phone,
+            ]);
         }
 
         return $response;
