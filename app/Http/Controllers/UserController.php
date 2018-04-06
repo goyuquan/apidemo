@@ -30,12 +30,9 @@ class UserController extends Controller
 
         $user = User::create($data);
         $statusCode = $user ? 200 : 422;
-        return response(
-            [
+        return response()->json([
                 'data' => $user,
-                'status' => $user ? "success" : "error",
-            ], $statusCode
-        );
+            ], $statusCode );
     }
 
 
@@ -43,16 +40,16 @@ class UserController extends Controller
     {
         try {
             $user = User::findOrFail($userId);
+            $statusCode = 200;
         } catch (\Exception $e) {
             $user = null;
             $statusCode = 404;
         }
-        return response(
-            [
+
+        return response([
                 'data' => $user,
-                'status' => $user ? "success" : "Not found.",
-            ], $statusCode ?? 201
-        );
+                'message' => $user ? "success" : "Not found.",
+            ], $statusCode );
     }
 
 
@@ -61,16 +58,16 @@ class UserController extends Controller
         try {
             $user = self::userExist($userId);
             $user->update($request->only('name', 'password'));
+            $statusCode = 200;
         } catch(\Exception $e) {
             $user = null;
             $statusCode = 404;
         }
-        return response(
-            [
+
+        return response([
                 "data" => $user,
                 "status" => $user ? "success" : "Not found."
-            ], $statusCode ?? 200
-        );
+            ], $statusCode);
     }
 
 
@@ -79,16 +76,16 @@ class UserController extends Controller
         try {
             $user = self::userExist($userId);
             $user->delete();
+            $statusCode = 200;
         } catch(\Exception $e) {
             $user = null;
             $statusCode = 404;
         }
-        return response(
-            [
+
+        return response([
                 "data" => $user,
                 "status" => $user ? "success" : "Not found."
-            ], $statusCode ?? 200
-        );
+            ], $statusCode );
     }
 
 
@@ -112,10 +109,12 @@ class UserController extends Controller
             User::where('phone', $request->input('phone'))
                         ->update(['remember_token' => $token]);
 
-            return response()->json(['status' => 'success', 'data' => $user], 200)
-                                ->withHeaders([
-                                    'Authorization' => $token,
-                                ]);
+            return response()->json([
+                            'status' => 'success',
+                            'data' => $user], 200)
+                            ->withHeaders([
+                                'Authorization' => $token,
+                            ]);
         }else{
             return response()->json([
                 'status' => 'fail',

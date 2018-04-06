@@ -14,11 +14,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
 
     protected $fillable = [
-        'phone', 'password', 'name'
+        'phone', 'password', 'name', 'role'
     ];
 
     protected $hidden = [
-        'password', 'remember_token'
+        'contact_id', 'password', 'remember_token'
     ];
 
     public function contacts()
