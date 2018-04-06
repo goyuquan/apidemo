@@ -14,15 +14,25 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
 
     protected $fillable = [
-        'phone', 'password', 'name', 'role'
+        'contact_id', 'phone', 'password', 'name', 'role'
     ];
 
     protected $hidden = [
-        'contact_id', 'password', 'remember_token'
+        'password', 'remember_token'
     ];
 
     public function contacts()
     {
         return $this->hasMany('App\Contact');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany('App\Order');
+    }
+
+    public function order_records()
+    {
+        return $this->hasMany('App\Order_record');
     }
 }

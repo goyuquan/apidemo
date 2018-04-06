@@ -8,23 +8,25 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 
-class Contact extends Model implements AuthenticatableContract, AuthorizableContract
+class Shopping_cart extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable;
 
-
     protected $fillable = [
-        'phone', 'name', 'address'
+        'product_id',
+        'count',
+        'form'
     ];
 
-    public function user()
+    public function product()
     {
-        return $this->belongsTo('App\User');
+        return $this->hasOne('App\Product');
     }
 
     public function order()
     {
         return $this->belongsTo('App\Order');
     }
+
 
 }
