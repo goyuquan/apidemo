@@ -12,7 +12,7 @@ class UserController extends Controller
 
     public function index()
     {
-        return response(['data' => User::all()->toArray()]);
+        return response()->json(['data' => User::all()->toArray()], 200);
     }
 
 
