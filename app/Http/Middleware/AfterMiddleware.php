@@ -17,7 +17,7 @@ class AfterMiddleware
         if(!empty($user)) {
             $token = base64_encode(str_random(40));
             $user->remember_token = $token;
-            $user->updated_at = Carbon::now()->toDateTimeString();
+            // $user->updated_at = Carbon::now()->toDateTimeString();
             $user->save();
 
             $response->header('Authorization', $token);
