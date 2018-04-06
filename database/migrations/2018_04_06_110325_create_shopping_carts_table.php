@@ -15,6 +15,9 @@ class CreateShoppingCartsTable extends Migration
     {
         Schema::create('shopping_carts', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('product_id');
+            $table->unsignedTinyInteger('count');
+            $table->unsignedTinyInteger('form');
             $table->timestamps();
         });
     }
