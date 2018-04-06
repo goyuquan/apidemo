@@ -15,6 +15,8 @@ class CreateOrderRecordTable extends Migration
     {
         Schema::create('order_record', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('order_id');
+            $table->float('price', 8, 2);
             $table->timestamps();
         });
     }
