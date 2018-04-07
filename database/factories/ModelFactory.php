@@ -16,10 +16,23 @@ $factory->define(App\User::class, function (Faker $faker) {
 
 $factory->define(App\Contact::class, function (Faker $faker) {
     return [
-        'user_id' => $faker->numberBetween(0, 60),
+        'user_id' => function () {
+            return factory(App\User::class)->create()->id;
+        }
         'phone' => $faker->numberBetween(10000000000, 19999999999),
         'name' => $faker->name,
         'address' => $faker->address,
         'default' => 0,
     ];
 });
+
+
+// $factory->define(App\Order::class, function (Faker $faker) {
+//     return [
+//         'user_id' => $faker->numberBetween(0, 60),
+//         'contact_id' => $faker->numberBetween(1, 80),
+//         'shopping_cart_id' => $faker->name,
+//         'address' => $faker->address,
+//         'default' => 0,
+//     ];
+// });
