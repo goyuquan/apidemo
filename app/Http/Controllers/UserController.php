@@ -47,10 +47,7 @@ class UserController extends Controller
             $statusCode = 404;
         }
 
-        return response([
-                'data' => $user,
-                'message' => $user ? "success" : "Not found.",
-            ], $statusCode );
+        return response()->json([ 'data' => $user ], $statusCode );
     }
 
 
