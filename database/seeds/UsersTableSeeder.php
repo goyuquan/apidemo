@@ -17,6 +17,9 @@ class UsersTableSeeder extends Seeder
             })
             ->each(function ($u) {
                 $u->orders()->save(factory(App\Order::class)->make());
+            })
+            ->each(function ($u) {
+                $u->order_records()->save(factory(App\Order_record::class)->make());
             });
     }
 }

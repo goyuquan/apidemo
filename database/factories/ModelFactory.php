@@ -15,9 +15,6 @@ $factory->define(App\User::class, function (Faker $faker) {
 
 $factory->define(App\Contact::class, function (Faker $faker) {
     return [
-        // 'user_id' => function () {
-        //     return factory(App\User::class)->create()->id;
-        // },
         'phone' => $faker->numberBetween(10000000000, 19999999999),
         'name' => $faker->name,
         'address' => $faker->address,
@@ -43,5 +40,13 @@ $factory->define(App\Shopping_cart::class, function (Faker $faker) {
         'order_id' => $faker->numberBetween(1, 60),
         'count' => $faker->numberBetween(1, 6),
         'form' => $faker->numberBetween(0, 3),
+    ];
+});
+
+
+$factory->define(App\Order_record::class, function (Faker $faker) {
+    return [
+        'order_id' => $faker->numberBetween(1, 60),
+        'price' => $faker->randomFloat(null, 0.5, 100),
     ];
 });
