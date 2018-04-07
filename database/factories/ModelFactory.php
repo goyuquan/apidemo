@@ -5,7 +5,6 @@ use Faker\Generator as Faker;
 
 $factory->define(App\User::class, function (Faker $faker) {
     return [
-        'contact_id' => $faker->randomNumber(1),
         'phone' => $faker->numberBetween(10000000000, 19999999999),
         'password' => '$2y$10$sr6a1PMteAvWvGZMdmhTPu7m3G9SAj/2uBRovZ3ZiEDwsVPtxs3Vu', //123123
         'name' => $faker->name,
