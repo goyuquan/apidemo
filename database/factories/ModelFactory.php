@@ -40,9 +40,7 @@ $factory->define(App\Order::class, function (Faker $faker) {
 
 $factory->define(App\Shopping_cart::class, function (Faker $faker) {
     return [
-        'order_id' => function () {
-            return factory(App\Order::class)->id;
-        },
+        'order_id' => $faker->numberBetween(1, 60),
         'count' => $faker->numberBetween(1, 6),
         'form' => $faker->numberBetween(0, 3),
     ];
