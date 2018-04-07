@@ -41,6 +41,7 @@ class UserController extends Controller
         try {
             $user = User::findOrFail($userId);
             $statusCode = 200;
+            $orders = $user->orders;
         } catch (\Exception $e) {
             $user = null;
             $statusCode = 404;
