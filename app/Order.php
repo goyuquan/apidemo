@@ -15,7 +15,6 @@ class Order extends Model implements AuthenticatableContract, AuthorizableContra
     protected $fillable = [
         'user_id',
         'contact_id',
-        'shopping_cart_id',
         'status',
         'period',
         'delivery_time'

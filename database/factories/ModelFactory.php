@@ -26,12 +26,13 @@ $factory->define(App\Contact::class, function (Faker $faker) {
 });
 
 
-// $factory->define(App\Order::class, function (Faker $faker) {
-//     return [
-//         'user_id' => $faker->numberBetween(0, 60),
-//         'contact_id' => $faker->numberBetween(1, 80),
-//         'shopping_cart_id' => $faker->name,
-//         'address' => $faker->address,
-//         'default' => 0,
-//     ];
-// });
+$factory->define(App\Order::class, function (Faker $faker) {
+    return [
+        'contact_id' => function () {
+            return factory(App\Contact::class)->create()->id;
+        },
+        'status' => $faker->randomNumber(1),
+        'period' => $faker->city,
+        'delivery_time' => $faker->time,
+    ];
+});
