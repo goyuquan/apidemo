@@ -50,3 +50,15 @@ $factory->define(App\Order_record::class, function (Faker $faker) {
         'price' => $faker->randomFloat(null, 0.5, 100),
     ];
 });
+
+
+$factory->define(App\Product::class, function (Faker $faker) {
+    return [
+        'status' => $faker->randomNumber(1),
+        'name' => $faker->name,
+        'price' => $faker->randomFloat(null, 0.1, 100),
+        'unit' => $faker->lexify('??'),
+        'origin' => $faker->city,
+        'describe' => $faker->text,
+    ];
+});
