@@ -41,17 +41,13 @@ class UserController extends Controller
         try {
             $user = User::findOrFail($userId);
             $statusCode = 200;
-            $orders = $user->orders;
         } catch (\Exception $e) {
             $user = null;
             $statusCode = 404;
         }
 
-        return response()->json([
-                'data' => [
-                    'user' => $user,
-                    'orders' => $orders
-                    ],
+        return response([
+                'data' => $user,
                 'message' => $user ? "success" : "Not found.",
             ], $statusCode );
     }
