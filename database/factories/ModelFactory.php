@@ -56,7 +56,7 @@ $factory->define(App\Product::class, function (Faker $faker) {
     return [
         'status' => $faker->randomNumber(1),
         'name' => $faker->name,
-        'price' => $faker->randomFloat(null, 0.1, 100),
+        'price' => $faker->randomFloat(null, 0.1, 10),
         'unit' => $faker->lexify('??'),
         'origin' => $faker->city,
         'describe' => $faker->text,
