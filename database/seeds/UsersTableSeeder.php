@@ -20,7 +20,10 @@ class UsersTableSeeder extends Seeder
                 $u->contacts()->save(factory(App\Contact::class)->make());
             })
             ->each(function ($u) {
-                $u->orders()->save(factory(App\Order::class, 110)->make());
+                $u->orders()->save(factory(App\Order::class)->make())
+                ->each(function ($u) {
+                    $u->shopping_carts()->save(factory(App\Shopping_cart::class)->make());
+                });
             });
     }
 }
