@@ -43,7 +43,7 @@ class UserController extends Controller
             $statusCode = 200;
             $orders = $user->orders;
             return response()->json([ 'data' => $user], $statusCode );
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $user = null;
             $statusCode = 404;
             abort(403, 'Unauthorized action.');
