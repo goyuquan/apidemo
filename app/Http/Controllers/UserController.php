@@ -42,14 +42,13 @@ class UserController extends Controller
             $user = User::findOrFail($userId);
             $statusCode = 200;
             $orders = $user->orders;
-            $error = '';
+            return response()->json([ 'data' => $user], $statusCode );
         } catch (\Exception $e) {
             $user = null;
             $statusCode = 404;
-            $error = $e;
+            return response()->json([ 'data' => $user, 'error' => $e ], $statusCode );
         }
 
-        return response()->json([ 'data' => $user, 'error' => $error ], $statusCode );
     }
 
 
