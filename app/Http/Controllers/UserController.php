@@ -46,6 +46,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             $user = null;
             $statusCode = 404;
+            report($e);
             return response()->json([ 'data' => $user, 'error' => $e ], $statusCode );
         }
 
