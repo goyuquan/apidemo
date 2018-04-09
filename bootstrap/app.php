@@ -93,11 +93,7 @@ $app->register(App\Providers\AuthServiceProvider::class);
 | can respond to, as well as the controllers that may handle them.
 |
 */
-$app->configureMonologUsing(function($monolog) {
-    $monolog->pushHandler(...);
 
-    return $monolog;
-});
 
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
