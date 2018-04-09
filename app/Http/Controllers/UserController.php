@@ -46,7 +46,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             $user = null;
             $statusCode = 404;
-            report($e);
+            abort(403, 'Unauthorized action.');
             return response()->json([ 'data' => $user, 'error' => $e ], $statusCode );
         }
 
