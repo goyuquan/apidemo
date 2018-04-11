@@ -12,7 +12,7 @@ class OrderController extends Controller
 
     public function index()
     {
-        return response()->json(['data' => User::all()->toArray()], 200);
+        return response()->json(['data' => Order::all()->toArray()], 200);
     }
 
 
