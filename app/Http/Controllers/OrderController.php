@@ -48,7 +48,7 @@ class OrderController extends Controller
         //     $statusCode = 404;
         //     return response()->json([ 'data' => $user ], $statusCode );
         // }
-        return response()->json([ 'data' => '$user' ] );
+        return "dsfdsfdf");
 
     }
 
