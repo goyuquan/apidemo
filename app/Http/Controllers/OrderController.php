@@ -36,10 +36,10 @@ class OrderController extends Controller
     }
 
 
-    public function show($userId)
+    public function show($orderId)
     {
         try {
-            $user = User::findOrFail($userId);
+            $user = User::findOrFail($orderId);
             $statusCode = 200;
             $orders = $user->orders;
             return response()->json([ 'data' => $user], $statusCode );
