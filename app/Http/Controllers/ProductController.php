@@ -16,7 +16,7 @@ class ProductController extends Controller
         $collection = collect(['product_id' => 1, 'price' => 100, 'discount' => false]);
         $filtered = $collection->except(['price', 'discount']);
         $filtered->all();
-        $products = Product::all()->forget(['describe', 'img_id']);
+        $products = Product::all()->forget('describe');
 
         // foreach ($products as $product) {
         //     dd($product);
