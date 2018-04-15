@@ -13,21 +13,9 @@ class ProductController extends Controller
 
     public function index()
     {
-        $collection = collect(['product_id' => 1, 'price' => 100, 'discount' => false]);
-        $filtered = $collection->except(['price', 'discount']);
-        $filtered->all();
-        $products = Product::all()->exclude('describe');
-
-        // foreach ($products as $product) {
-        //     dd($product);
-        // }
-        // dd($collection);
         return response()->json([
-            'data' => $products
+            'data' => Product::all() ->toArray()
         ], 200);
-        // return response()->json([
-        //     'data' => $products->toArray()
-        // ], 200);
     }
 
 
