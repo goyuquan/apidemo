@@ -40,10 +40,9 @@ class OrderController extends Controller
     public function show($orderId)
     {
         try {
-            $user = User::findOrFail($orderId);
+            $order = Order::findOrFail($orderId)->first;
             $statusCode = 200;
-            $orders = $user->orders;
-            return response()->json([ 'data' => $orders], $statusCode );
+            return response()->json([ 'data' => $order], $statusCode );
         } catch (Exception $e) {
             $user = null;
             $statusCode = 404;
