@@ -13,7 +13,11 @@ class ProductController extends Controller
 
     public function index()
     {
-        return response()->json(['data' => Product::all()->toArray()], 200);
+        return response()->json([
+            'data' => Product::all()
+            ->except(['describe', 'img_id'])
+            ->toArray()
+        ], 200);
     }
 
 
