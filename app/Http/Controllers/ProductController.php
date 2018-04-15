@@ -13,7 +13,18 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = Product::all()->pluck('describe');
+        $products = DB::table('products')->select(
+            'id',
+            'status',
+            'name',
+            'price',
+            'unit',
+            'origin',
+            'img_id',
+            'created_at'
+            'updated_at'
+            )->get();
+        // $products = Product::all()->pluck('describe');
         return response()->json([
             'data' => $products->toArray()
         ], 200);
