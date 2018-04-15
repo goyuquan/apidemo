@@ -40,7 +40,7 @@ class OrderController extends Controller
     public function show($orderId)
     {
         try {
-            $order = Order::findOrFail($orderId)->first;
+            $order = Order::findOrFail($orderId)->first();
             $statusCode = 200;
             return response()->json([ 'data' => $order], $statusCode );
         } catch (Exception $e) {
