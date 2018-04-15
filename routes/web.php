@@ -28,7 +28,7 @@ $router->group([ 'prefix' => '/api' ], function ($router) {
 
         $router->group([ 'prefix' => '/order' ], function ($router) {
             $router->get('/list', 'OrderController@index');
-            $router->get('/{id}', 'OrderController@index');
+            $router->get('/{id}', 'OrderController@show');
         });
     });
 
