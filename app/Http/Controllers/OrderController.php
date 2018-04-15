@@ -38,17 +38,16 @@ class OrderController extends Controller
 
     public function show($orderId)
     {
-        // try {
-        //     $user = User::findOrFail($orderId);
-        //     $statusCode = 200;
-        //     $orders = $user->orders;
-        //     return response()->json([ 'data' => $user], $statusCode );
-        // } catch (Exception $e) {
-        //     $user = null;
-        //     $statusCode = 404;
-        //     return response()->json([ 'data' => $user ], $statusCode );
-        // }
-        return "dsfdsfdf";
+        try {
+            $user = User::findOrFail($orderId);
+            $statusCode = 200;
+            $orders = $user->orders;
+            return response()->json([ 'data' => $orders], $statusCode );
+        } catch (Exception $e) {
+            $user = null;
+            $statusCode = 404;
+            return response()->json([ 'message' => $e ], $statusCode );
+        }
 
     }
 
