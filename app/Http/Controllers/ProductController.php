@@ -16,8 +16,9 @@ class ProductController extends Controller
         $collection = collect(['product_id' => 1, 'price' => 100, 'discount' => false]);
         $filtered = $collection->except(['price', 'discount']);
         $filtered->all();
-        $products = Product::all()->except(['describe', 'img_id']);
-        dd($collection);
+        $product = Product::all()->except(['describe', 'img_id']);
+        $products->all();
+        // dd($collection);
         return response()->json([
             'data' => $products
         ], 200);
