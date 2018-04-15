@@ -13,7 +13,7 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = Product::all()->->pluck('describe');
+        $products = Product::all()->pluck('describe');
         return response()->json([
             'data' => $products->toArray()
         ], 200);
