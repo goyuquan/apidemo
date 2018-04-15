@@ -13,8 +13,9 @@ class ProductController extends Controller
 
     public function index()
     {
+        // $products = 
         return response()->json([
-            'data' => Product::all() ->toArray()
+            'data' => Product::except(['describe']) ->toArray()
         ], 200);
     }
 
