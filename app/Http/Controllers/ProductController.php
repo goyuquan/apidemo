@@ -21,7 +21,7 @@ class ProductController extends Controller
         $products->all();
 
         foreach ($products as $product) {
-            echo $product => name;
+            dd($product);
         }
         // dd($collection);
         return response()->json([
