@@ -17,7 +17,7 @@ class ProductController extends Controller
         $filtered = $collection->except(['price', 'discount']);
         $filtered->all();
         $products = Product::all();
-        ->except(['describe', 'img_id']);
+        // ->except(['describe', 'img_id']);
         $products->all();
 
         foreach ($products as $product) {
