@@ -20,15 +20,15 @@ $router->group([ 'prefix' => '/api' ], function ($router) {
 
     $router->group(['middleware' => ['auth', 'after']], function () use ($router) {
         $router->get('/users/list', 'UserController@index');
-        $router->post('/todo','TodoController@store');
-        $router->get('/todo', 'TodoController@index');
-        $router->get('/todo/{id}', 'TodoController@show');
-        $router->put('/todo/{id}', 'TodoController@update');
-        $router->delete('/todo/{id}', 'TodoController@destroy');
 
         $router->group([ 'prefix' => '/order' ], function ($router) {
             $router->get('/list', 'OrderController@index');
             $router->get('/{id}', 'OrderController@show');
+        });
+
+        $router->group([ 'prefix' => '/product' ], function ($router) {
+            $router->get('/list', 'ProductController@index');
+            $router->get('/{id}', 'ProductController@show');
         });
     });
 
