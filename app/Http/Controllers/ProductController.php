@@ -25,7 +25,6 @@ class ProductController extends Controller
             'created_at',
             'updated_at'
             )->get();
-        // $products = Product::all()->pluck('describe');
         return response()->json([
             'data' => $products->toArray()
         ], 200);
