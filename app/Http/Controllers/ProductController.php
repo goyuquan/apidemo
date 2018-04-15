@@ -15,7 +15,7 @@ class ProductController extends Controller
     {
         $products = Product::all()->except(['describe', 'img_id'])->all();
         return response()->json([
-            'data' => $products->toArray()
+            'data' => $products
         ], 200);
         // return response()->json([
         //     'data' => $products->toArray()
