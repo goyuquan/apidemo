@@ -5,7 +5,7 @@ use Faker\Generator as Faker;
 
 $factory->define(App\Option::class, function (Faker $faker) {
     return [
-        'column' => $faker->randomElements(array('option1', 'option2', 'option3')),
+        'column' => $faker->randomElements(['option1', 'option2', 'option3']),
         'option' => $faker->word,
     ];
 });
