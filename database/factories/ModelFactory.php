@@ -3,6 +3,13 @@
 use Faker\Generator as Faker;
 
 
+$factory->define(App\Option::class, function (Faker $faker) {
+    return [
+        'column' => $faker->randomElements(array('option1', 'option2', 'option3')),
+        'role' => $faker->word,
+    ];
+});
+
 $factory->define(App\User::class, function (Faker $faker) {
     return [
         'phone' => $faker->numberBetween(10000000000, 19999999999),
