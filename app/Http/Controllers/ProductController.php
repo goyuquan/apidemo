@@ -45,7 +45,7 @@ class ProductController extends Controller
         $data = Product::find($id);
 
 
-        $data->phone = $request->input('phone');
+        $data->name = $request->input('name');
         $data->price = $request->input('price');
         $data->status = $request->input('status');
         $data->unit = $request->input('unit');
@@ -53,11 +53,13 @@ class ProductController extends Controller
         $data->img_id = $request->input('img_id');
         $data->describe = $request->input('describe');
         // $data->save();
-        if ($data->save()) {
-            $statusCode = 200;
-        } else {
-            $statusCode = 500;
-        }
+        // if ($data->save()) {
+        //     $statusCode = 200;
+        // } else {
+        //     $statusCode = 500;
+        // }
+
+        $statusCode = $data->save() ? 200 : 500;
 
         return response()->json([
                 'STATUS' => '$user',
