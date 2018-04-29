@@ -46,13 +46,13 @@ class ProductController extends Controller
         $data = Product::find($id);
 
 
-        $data->phone = $request->input('phone');
-        $data->price = $request->input('price');
-        $data->status = $request->input('status');
-        $data->unit = $request->input('unit');
-        $data->origin = $request->input('origin');
-        $data->img_id = $request->input('img_id');
-        $data->describe = $request->input('describe');
+        $data->phone = $request->phone;
+        $data->price = $request->price;
+        $data->status = $request->status;
+        $data->unit = $request->unit;
+        $data->origin = $request->origin;
+        $data->img_id = $request->img_id;
+        $data->describe = $request->describe;
         // $data->save();
         if ($data->save()) {
             $statusCode = 200;
