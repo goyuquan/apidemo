@@ -39,7 +39,6 @@ class ProductController extends Controller
             'status' => 'required',
             'unit' => 'required',
             'origin' => 'required',
-            'img_id' => 'nullable|required',
             'describe' => 'required'
         ]);
 
