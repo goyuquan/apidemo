@@ -31,22 +31,33 @@ class ProductController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'phone' => 'required|unique:users',
-            'password' => 'required'
+            'name' => 'required|unique:products',
+            'price' => 'required',
+            'status' => 'required',
+            'unit' => 'required',
+            'origin' => 'required',
+            'describe' => 'required'
         ]);
 
-        $data = [
-            'phone' => $request->input('phone'),
-            'password' => Hash::make($request->input('password'))
-        ];
+        $data = App\Product::find($id);
 
-        $user = User::create($data);
-        $statusCode = $user ? 200 : 422;
+        $data->phone => $request->input('phone'),
+        $data->price => $request->input('price'),
+        $data->status => $request->input('status'),
+        $data->unit => $request->input('unit'),
+        $data->origin => $request->input('origin'),
+        $data->img_id => $request->input('img_id'),
+        $data->describe => $request->input('describe'),
+
+        // if ($data->save()) {
+            $statusCode = $data->save() ? 200 : 500;
+        // }
+
         return response()->json([
-                'data' => $user,
+                'STATUS' => '$user',
             ], $statusCode );
     }
 
