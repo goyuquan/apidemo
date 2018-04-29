@@ -34,6 +34,36 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         return "aaa";
+        $this->validate($request, [
+            'name' => 'required|unique:products',
+            'price' => 'required',
+            'status' => 'required',
+            'unit' => 'required',
+            'origin' => 'required',
+            'describe' => 'required'
+        ]);
+
+        $data = Product::find($id);
+
+        dd($data);
+
+        $data->phone = $request->input('phone');
+        $data->price = $request->input('price');
+        $data->status = $request->input('status');
+        $data->unit = $request->input('unit');
+        $data->origin = $request->input('origin');
+        $data->img_id = $request->input('img_id');
+        $data->describe = $request->input('describe');
+        $data->save();
+        // if ($data->save()) {
+            $statusCode = 200;
+        // } else {
+        //     $statusCode = 500;
+        // }
+
+        return response()->json([
+                'STATUS' => '$user',
+            ], $statusCode );
     }
 
 
