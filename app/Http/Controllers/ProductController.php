@@ -43,18 +43,18 @@ class ProductController extends Controller
         //     'describe' => 'required'
         // ]);
 
-        $validated = $request->rules();
+        // $validated = $request->rules();
 
         try {
             $data = Product::find($id);
 
-            $data->name = $validated->input('name');
-            $data->price = $validated->input('price');
-            $data->status = $validated->input('status');
-            $data->unit = $validated->input('unit');
-            $data->origin = $validated->input('origin');
-            $data->img_id = $validated->input('img_id');
-            $data->describe = $validated->input('describe');
+            $data->name = $request->input('name');
+            $data->price = $request->input('price');
+            $data->status = $request->input('status');
+            $data->unit = $request->input('unit');
+            $data->origin = $request->input('origin');
+            $data->img_id = $request->input('img_id');
+            $data->describe = $request->input('describe');
 
             $msg = '更新成功';
             $statusCode = 200;
