@@ -7,6 +7,7 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Carbon;
+use App\Http\Requests\ValidateRules;
 
 
 class ProductController extends Controller
@@ -31,27 +32,29 @@ class ProductController extends Controller
     }
 
 
-    public function update(Request $request, $id)
+    public function update(StoreBlogPost $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required|unique:products',
-            'price' => 'required',
-            'status' => 'required',
-            'unit' => 'required',
-            'origin' => 'required',
-            'describe' => 'required'
-        ]);
+        // $this->validate($request, [
+        //     'name' => 'required|unique:products',
+        //     'price' => 'required',
+        //     'status' => 'required',
+        //     'unit' => 'required',
+        //     'origin' => 'required',
+        //     'describe' => 'required'
+        // ]);
+
+        $validated = $request->validated();
 
         try {
             $data = Product::find($id);
 
-            $data->name = $request->input('name');
-            $data->price = $request->input('price');
-            $data->status = $request->input('status');
-            $data->unit = $request->input('unit');
-            $data->origin = $request->input('origin');
-            $data->img_id = $request->input('img_id');
-            $data->describe = $request->input('describe');
+            $data->name = $validated->input('name');
+            $data->price = $validated->input('price');
+            $data->status = $validated->input('status');
+            $data->unit = $validated->input('unit');
+            $data->origin = $validated->input('origin');
+            $data->img_id = $validated->input('img_id');
+            $data->describe = $validated->input('describe');
 
             $msg = '更新成功';
             $statusCode = 200;
