@@ -39,25 +39,29 @@ class ProductController extends Controller
             'status' => 'required',
             'unit' => 'required',
             'origin' => 'required',
+            'img_id' => 'nullable|required',
             'describe' => 'required'
         ]);
 
-        $data = Product::find($id);
+        try {
+            $data = Product::find($id);
 
+            $data->name = $request->input('name');
+            $data->price = $request->input('price');
+            $data->status = $request->input('status');
+            $data->unit = $request->input('unit');
+            $data->origin = $request->input('origin');
+            $data->img_id = $request->input('img_id');
+            $data->describe = $request->input('describe');
 
-        $data->name = $request->input('name');
-        $data->price = $request->input('price');
-        $data->status = $request->input('status');
-        $data->unit = $request->input('unit');
-        $data->origin = $request->input('origin');
-        $data->img_id = $request->input('img_id');
-        $data->describe = $request->input('describe');
+            $msg = '更新成功';
+            $statusCode = 200;
+        } catch(\Exception $e) {
+            $msg = '更新b出了问题';
+            $statusCode = 500;
+        }
 
-        $statusCode = $data->save() ? 200 : 500;
-
-        return response()->json([
-                'message' => '更新成功!',
-            ], $statusCode );
+        return response()->json([ 'message' => $msg ], $statusCode );
     }
 
 
