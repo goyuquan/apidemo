@@ -1,13 +1,18 @@
 <?php
+namespace App\Http\Requests;
+use Illuminate\Foundation\Http\FormRequest;
 
-public function rules()
+class ValidateRules extends FormRequest
 {
-    return [
-        'name' => 'required|unique:products',
-        'price' => 'required',
-        'status' => 'required',
-        'unit' => 'required',
-        'origin' => 'required',
-        'describe' => 'required'
-    ];
+    public function rules()
+    {
+        return [
+            'name' => 'required|unique:products',
+            'price' => 'required',
+            'status' => 'required',
+            'unit' => 'required',
+            'origin' => 'required',
+            'describe' => 'required'
+        ];
+    }
 }
