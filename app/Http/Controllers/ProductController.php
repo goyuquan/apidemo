@@ -51,7 +51,7 @@ class ProductController extends Controller
         $data->origin = $request->input('origin');
         $data->img_id = $request->input('img_id');
         $data->describe = $request->input('describe');
-$data->save()
+$data->save();
         // if ($data->save()) {
         //     $statusCode = 200;
         // } else {
