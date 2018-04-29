@@ -42,7 +42,7 @@ class ProductController extends Controller
             'describe' => 'required'
         ]);
 
-        $data = App\Product::find($id);
+        $data = Product::find($id);
 
         dd($data);
 
@@ -55,7 +55,7 @@ class ProductController extends Controller
         $data->describe = $request->input('describe');
         $data->save();
         // if ($data->save()) {
-        //     $statusCode = 200;
+            $statusCode = 200;
         // } else {
         //     $statusCode = 500;
         // }
