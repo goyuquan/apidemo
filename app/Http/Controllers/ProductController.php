@@ -60,6 +60,7 @@ class ProductController extends Controller
         // }
 
         $statusCode = $data->save() ? 200 : 500;
+        dd($statusCode);
 
         return response()->json([
                 'STATUS' => '$user',
