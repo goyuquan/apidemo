@@ -44,13 +44,13 @@ class ProductController extends Controller
 
         $data = App\Product::find($id);
 
-        $data->phone = $request->input('phone'),
-        $data->price = $request->input('price'),
-        $data->status = $request->input('status'),
-        $data->unit = $request->input('unit'),
-        $data->origin = $request->input('origin'),
-        $data->img_id = $request->input('img_id'),
-        $data->describe = $request->input('describe'),
+        $data->phone = $request->input('phone');
+        $data->price = $request->input('price');
+        $data->status = $request->input('status');
+        $data->unit = $request->input('unit');
+        $data->origin = $request->input('origin');
+        $data->img_id = $request->input('img_id');
+        $data->describe = $request->input('describe');
 
         // if ($data->save()) {
             $statusCode = $data->save() ? 200 : 500;
