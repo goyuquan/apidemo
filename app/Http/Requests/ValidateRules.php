@@ -1,16 +1,13 @@
 <?php
 
-class ValidateRules
+public function rules()
 {
-    public function rules()
-    {
-        return [
-            'name' => 'required|unique:products',
-            'price' => 'required',
-            'status' => 'required',
-            'unit' => 'required',
-            'origin' => 'required',
-            'describe' => 'required'
-        ];
-    }
+    return [
+        'name' => 'required|unique:products',
+        'price' => 'required',
+        'status' => 'required',
+        'unit' => 'required',
+        'origin' => 'required',
+        'describe' => 'required'
+    ];
 }
