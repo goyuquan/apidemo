@@ -33,6 +33,7 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
+        dd($request);
         $this->validate($request, [
             'name' => 'required|unique:products',
             'price' => 'required',
@@ -44,7 +45,6 @@ class ProductController extends Controller
 
         $data = Product::find($id);
 
-        dd($data);
 
         $data->phone = $request->input('phone');
         $data->price = $request->input('price');
