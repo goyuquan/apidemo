@@ -52,9 +52,11 @@ class ProductController extends Controller
         $data->img_id = $request->input('img_id');
         $data->describe = $request->input('describe');
 
-        // if ($data->save()) {
-            $statusCode = $data->save() ? 200 : 500;
-        // }
+        if ($data->save()) {
+            $statusCode = 200;
+        } else {
+            $statusCode = 500;
+        }
 
         return response()->json([
                 'STATUS' => '$user',
