@@ -1,8 +1,7 @@
 <?php
 namespace App\Http\Requests;
-use Illuminate\Foundation\Http\FormRequest;
 
-class ValidateRules extends FormRequest
+class ValidateRules extends Request
 {
     public function rules()
     {
