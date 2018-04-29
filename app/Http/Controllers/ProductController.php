@@ -32,7 +32,7 @@ class ProductController extends Controller
     }
 
 
-    public function update(StoreBlogPost $request, $id)
+    public function update(ValidateRules $request, $id)
     {
         // $this->validate($request, [
         //     'name' => 'required|unique:products',
