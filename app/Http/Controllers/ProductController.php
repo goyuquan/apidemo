@@ -51,12 +51,12 @@ class ProductController extends Controller
         $data->origin = $request->input('origin');
         $data->img_id = $request->input('img_id');
         $data->describe = $request->input('describe');
-
-        if ($data->save()) {
-            $statusCode = 200;
-        } else {
-            $statusCode = 500;
-        }
+$data->save()
+        // if ($data->save()) {
+        //     $statusCode = 200;
+        // } else {
+        //     $statusCode = 500;
+        // }
 
         return response()->json([
                 'STATUS' => '$user',
