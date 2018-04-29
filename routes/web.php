@@ -29,7 +29,7 @@ $router->group([ 'prefix' => '/api' ], function ($router) {
         $router->group([ 'prefix' => '/product' ], function ($router) {
             $router->get('/list', 'ProductController@index');
             $router->get('/{id}', 'ProductController@show');
-            $router->post('/edit/{id}', 'ProductController@show');
+            $router->post('/edit/{id}', 'ProductController@update');
         });
     });
 

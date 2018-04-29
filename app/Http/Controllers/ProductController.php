@@ -33,7 +33,6 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        return "aaa";
         $this->validate($request, [
             'name' => 'required|unique:products',
             'price' => 'required',
@@ -54,12 +53,12 @@ class ProductController extends Controller
         $data->origin = $request->input('origin');
         $data->img_id = $request->input('img_id');
         $data->describe = $request->input('describe');
-        $data->save();
-        // if ($data->save()) {
+        // $data->save();
+        if ($data->save()) {
             $statusCode = 200;
-        // } else {
-        //     $statusCode = 500;
-        // }
+        } else {
+            $statusCode = 500;
+        }
 
         return response()->json([
                 'STATUS' => '$user',
@@ -82,22 +81,22 @@ class ProductController extends Controller
     }
 
 
-    public function update(Request $request, $userId)
-    {
-        try {
-            $user = self::userExist($userId);
-            $user->update($request->only('name', 'password'));
-            $statusCode = 200;
-        } catch(\Exception $e) {
-            $user = null;
-            $statusCode = 404;
-        }
-
-        return response([
-                "data" => $user,
-                "status" => $user ? "success" : "Not found."
-            ], $statusCode);
-    }
+    // public function update(Request $request, $userId)
+    // {
+    //     try {
+    //         $user = self::userExist($userId);
+    //         $user->update($request->only('name', 'password'));
+    //         $statusCode = 200;
+    //     } catch(\Exception $e) {
+    //         $user = null;
+    //         $statusCode = 404;
+    //     }
+    //
+    //     return response([
+    //             "data" => $user,
+    //             "status" => $user ? "success" : "Not found."
+    //         ], $statusCode);
+    // }
 
 
     public function delete($userId)
