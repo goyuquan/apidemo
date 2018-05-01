@@ -33,7 +33,12 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        $options = DB::select("select distinct COLUMN_NAME from information_schema.columns where TABLE_SCHEMA='api' ");
+        $options = DB::select("
+                    select distinct COLUMN_NAME
+                    from information_schema.columns
+                    where TABLE_SCHEMA='api'
+                    not like ‘%id' 
+                    ");
 
         return response()->json($options);
 
