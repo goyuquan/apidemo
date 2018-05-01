@@ -37,7 +37,7 @@ class ProductController extends Controller
                     select distinct COLUMN_NAME
                     from information_schema.columns
                     where TABLE_SCHEMA='api'
-                    not like ‘%id' 
+                    not like '%id' 
                     ");
 
         return response()->json($options);
