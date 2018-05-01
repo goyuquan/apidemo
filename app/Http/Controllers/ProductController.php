@@ -33,6 +33,10 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
+        $message = [
+            'name.required' => '名称不能为空',
+            'name.unique' => '名称民存在了',
+        ];
         $this->validate($request, [
             'name' => 'required|unique:products',
             'price' => 'required',
@@ -40,7 +44,7 @@ class ProductController extends Controller
             'unit' => 'required',
             'origin' => 'required',
             'describe' => 'required'
-        ]);
+        ], $message);
 
         try {
             $data = Product::find($id);
