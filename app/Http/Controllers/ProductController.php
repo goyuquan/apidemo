@@ -44,7 +44,7 @@ class ProductController extends Controller
         // ]);
 
         $vali = ValidateRule::validate($request);
-        dd($vali);
+        return ($vali);
 
         try {
             $data = Product::find($id);
