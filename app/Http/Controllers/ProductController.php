@@ -7,7 +7,6 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Carbon;
-use App\Common\ValidateRule;
 
 
 class ProductController extends Controller
@@ -34,17 +33,14 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        // $this->validate($request, [
-        //     'name' => 'required|unique:products',
-        //     'price' => 'required',
-        //     'status' => 'required',
-        //     'unit' => 'required',
-        //     'origin' => 'required',
-        //     'describe' => 'required'
-        // ]);
-
-        $vali = ValidateRule::validate($request);
-        return ($vali);
+        $this->validate($request, [
+            'name' => 'required|unique:products',
+            'price' => 'required',
+            'status' => 'required',
+            'unit' => 'required',
+            'origin' => 'required',
+            'describe' => 'required'
+        ]);
 
         try {
             $data = Product::find($id);
