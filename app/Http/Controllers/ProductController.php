@@ -33,7 +33,7 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        $options = DB::select("SELECT distinct * FROM information_schema.column");
+        $options = DB::select("SELECT distinct * FROM information_schema.columns");
 
         dd($options);
 
