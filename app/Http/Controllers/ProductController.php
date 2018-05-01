@@ -7,6 +7,7 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 
 class ProductController extends Controller
@@ -33,6 +34,10 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
+        $options = DB::select("select NAME from SYSOBJECTS where TYPE='U'");
+
+        dd($options);
+
         $message = [
             'name.required' => '名称必填',
             'name.unique' => '名称已经存在了',

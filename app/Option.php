@@ -17,10 +17,5 @@ class Option extends Model implements AuthenticatableContract, AuthorizableContr
         'option',
     ];
 
-    // public function user()
-    // {
-    //     return $this->belongsTo('App\User');
-    // }
-
 
 }
