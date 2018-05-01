@@ -33,7 +33,7 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        $options = DB::select("select NAME from SYSOBJECTS where TYPE='U'");
+        $options = DB::select("SELECT * FROM INFORMATION_SCHEMA.TABLES");
 
         dd($options);
 
