@@ -44,7 +44,7 @@ class ProductController extends Controller
         // ]);
 
         // $validated = $request->rules();
-        ValidateRule::validate($request);
+        // ValidateRule::validate($request);
 
         try {
             $data = Product::find($id);
