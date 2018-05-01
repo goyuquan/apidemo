@@ -35,7 +35,7 @@ class ProductController extends Controller
     {
         $options = DB::select("SELECT distinct COLUMN_NAME FROM information_schema.columns");
 
-        rekturn response()->json($options);
+        return response()->json($options);
 
         $message = [
             'name.required' => '名称必填',
