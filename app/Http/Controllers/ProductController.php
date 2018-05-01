@@ -40,7 +40,7 @@ class ProductController extends Controller
                     ");
 
         $option_values = array();
-        foreach($arr as $value) {
+        foreach($options as $value) {
             array_prepend($option_values, $value);
         }
 
