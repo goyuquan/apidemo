@@ -39,7 +39,12 @@ class ProductController extends Controller
                     where TABLE_SCHEMA='api'
                     ");
 
-        return call_user_func_array('array_merge', $options);
+        $option_values = array();
+        foreach($arr as $value) {
+            array_prepend($option_values, $value);
+        }
+
+        return $option_values;
 
         $message = [
             'name.required' => '名称必填',
