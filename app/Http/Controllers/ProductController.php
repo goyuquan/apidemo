@@ -44,7 +44,7 @@ class ProductController extends Controller
         //     array_push($option_values, $key);
         //     return $option_values;
         // }
-        dd($options);
+        dd(array_collapse($options));
 
 
         $message = [
