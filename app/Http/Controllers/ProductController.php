@@ -32,7 +32,7 @@ class ProductController extends Controller
     }
 
 
-    public function update($request, $id)
+    public function update(Request $request, $id)
     {
         // $this->validate($request, [
         //     'name' => 'required|unique:products',
@@ -43,7 +43,6 @@ class ProductController extends Controller
         //     'describe' => 'required'
         // ]);
 
-        // $validated = $request->rules();
         // ValidateRule::validate($request);
 
         try {
@@ -81,24 +80,6 @@ class ProductController extends Controller
         }
 
     }
-
-
-    // public function update(Request $request, $userId)
-    // {
-    //     try {
-    //         $user = self::userExist($userId);
-    //         $user->update($request->only('name', 'password'));
-    //         $statusCode = 200;
-    //     } catch(\Exception $e) {
-    //         $user = null;
-    //         $statusCode = 404;
-    //     }
-    //
-    //     return response([
-    //             "data" => $user,
-    //             "status" => $user ? "success" : "Not found."
-    //         ], $statusCode);
-    // }
 
 
     public function delete($userId)
