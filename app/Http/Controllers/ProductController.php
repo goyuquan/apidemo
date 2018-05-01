@@ -42,9 +42,9 @@ class ProductController extends Controller
         $option_values = array();
         foreach($options as $value) {
             array_push($option_values, $value);
+            return $option_values;
         }
 
-        return $option_values;
 
         $message = [
             'name.required' => '名称必填',
