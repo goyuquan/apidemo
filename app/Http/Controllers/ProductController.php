@@ -34,8 +34,13 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $message = [
-            'name.required' => '名称不能为空',
-            'name.unique' => '名称民存在了',
+            'name.required' => '名称必填',
+            'name.unique' => '名称已经存在了',
+            'price.required' => '价格必填',
+            'status.required' => '状态必填',
+            'unit.required' => '单位必填',
+            'origin.required' => '产地必填',
+            'describe.required' => '描述必填'
         ];
         $this->validate($request, [
             'name' => 'required|unique:products',
