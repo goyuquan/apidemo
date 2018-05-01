@@ -8,7 +8,7 @@ use Illuminate\Auth\Authenticatable;
 class ValidateRule
 {
 
-    public function validate($input)
+    static function validate($input)
     {
         $rules = [
             'name' => 'required|unique:products',
