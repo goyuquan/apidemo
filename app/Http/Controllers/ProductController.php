@@ -40,10 +40,11 @@ class ProductController extends Controller
                     ");
 
         $option_values = array();
-        foreach($options as $key => $value) {
-            array_push($option_values, $key);
-            return $option_values;
-        }
+        // foreach($options as $key => $value) {
+        //     array_push($option_values, $key);
+        //     return $option_values;
+        // }
+        dd($options);
 
 
         $message = [
