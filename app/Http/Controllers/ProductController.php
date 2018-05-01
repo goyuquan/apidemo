@@ -43,7 +43,8 @@ class ProductController extends Controller
         //     'describe' => 'required'
         // ]);
 
-        ValidateRule::validate($request);
+        $vali = ValidateRule::validate($request);
+        dd($vali)
 
         try {
             $data = Product::find($id);
