@@ -41,9 +41,9 @@ class ProductController extends Controller
 
         $option_values = array();
         foreach($options as $key => $value) {
-            array_push($option_values, $value['COLUMN_NAME'] );
+            array_push($option_values, $value => 'COLUMN_NAME' );
         }
-        dd(array_flatten($option_values));
+        return $option_values
 
 
         $message = [
