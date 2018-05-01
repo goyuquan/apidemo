@@ -40,7 +40,7 @@ class ProductController extends Controller
                     ");
 
         $option_values = array();
-        foreach($options as $value) {
+        foreach($options as $key => $value) {
             array_push($option_values, $value);
             return $option_values;
         }
