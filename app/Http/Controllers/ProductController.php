@@ -39,7 +39,7 @@ class ProductController extends Controller
                     where TABLE_SCHEMA='api'
                     ");
 
-        return response()->json($options);
+        return response()->json(array_flatten($options));
 
         $message = [
             'name.required' => '名称必填',
