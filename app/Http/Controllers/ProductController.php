@@ -89,7 +89,7 @@ class ProductController extends Controller
             }
 
             $product = Product::findOrFail($productId)->first();
-            $product = array_append($product, $option_values);
+            $product = array_add($product, 'options', $option_values);
             $statusCode = 200;
             return response()->json([ 'data' => $product], $statusCode );
         } catch (Exception $e) {
