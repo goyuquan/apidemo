@@ -33,18 +33,6 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        $options = DB::select("
-                    select distinct COLUMN_NAME
-                    from information_schema.columns
-                    where TABLE_SCHEMA='api'
-                    ");
-
-        $option_values = array();
-        foreach($options as $key => $value) {
-            array_push($option_values, $value->COLUMN_NAME );
-        }
-        return $option_values;
-
 
         $message = [
             'name.required' => '名称必填',
@@ -88,8 +76,20 @@ class ProductController extends Controller
 
     public function show($productId)
     {
+        $options = DB::select("
+        select distinct COLUMN_NAME
+        from information_schema.columns
+        where TABLE_SCHEMA='api'
+        ");
+        $option_values = array();
+
         try {
+            foreach($options as $value) {
+                array_push($option_values, $value->COLUMN_NAME );
+            }
+
             $product = Product::findOrFail($productId)->first();
+            $product = array_append($product, $option_values);
             $statusCode = 200;
             return response()->json([ 'data' => $product], $statusCode );
         } catch (Exception $e) {
