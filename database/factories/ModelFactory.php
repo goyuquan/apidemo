@@ -42,23 +42,6 @@ $factory->define(App\Order::class, function (Faker $faker) {
 });
 
 
-$factory->define(App\Shopping_cart::class, function (Faker $faker) {
-    return [
-        'order_id' => $faker->numberBetween(1, 60),
-        'count' => $faker->numberBetween(1, 6),
-        'form' => $faker->numberBetween(0, 3),
-    ];
-});
-
-
-$factory->define(App\Order_record::class, function (Faker $faker) {
-    return [
-        'order_id' => $faker->numberBetween(1, 60),
-        'price' => $faker->randomFloat(null, 0.5, 100),
-    ];
-});
-
-
 $factory->define(App\Product::class, function (Faker $faker) {
     return [
         'status' => $faker->randomNumber(1),

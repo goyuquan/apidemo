@@ -22,10 +22,5 @@ class Product extends Model implements AuthenticatableContract, AuthorizableCont
         'describe'
     ];
 
-    public function shopping_cart()
-    {
-        return $this->belongsTo('App\Shopping_cart');
-    }
-
 
 }

@@ -88,8 +88,8 @@ class ProductController extends Controller
                 array_push($option_values, $value->COLUMN_NAME );
             }
 
-            $product = Product::findOrFail($productId)->first();
-            $product = array_add($product, 'options', $option_values);
+            $products = Product::findOrFail($productId)->first();
+            $product = array_add($products, 'options', $option_values);
             $statusCode = 200;
             return response()->json([ 'data' => $product], $statusCode );
         } catch (Exception $e) {

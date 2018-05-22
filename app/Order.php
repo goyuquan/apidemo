@@ -25,16 +25,6 @@ class Order extends Model implements AuthenticatableContract, AuthorizableContra
         return $this->hasOne('App\Contact');
     }
 
-    public function order_records()
-    {
-        return $this->hasMany('App\Order_record');
-    }
-
-    public function shopping_carts()
-    {
-        return $this->hasMany('App\Shopping_cart');
-    }
-
     public function user()
     {
         return $this->belongsTo('App\User');

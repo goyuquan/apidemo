@@ -31,8 +31,4 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasMany('App\Order');
     }
 
-    public function order_records()
-    {
-        return $this->hasMany('App\Order_record');
-    }
 }
