@@ -45,4 +45,11 @@ $router->group([ 'prefix' => '/api' ], function ($router) {
         $router->delete('/{id}', 'UserController@delete');
     });
 
+    $router->group([ 'prefix' => '/option' ], function ($router) {
+        $router->post('/', 'OptionController@store');
+        $router->get('/{id}', 'OptionController@show');
+        $router->put('/{id}', 'OptionController@update');
+        $router->delete('/{id}', 'OptionController@delete');
+    });
+
 });
