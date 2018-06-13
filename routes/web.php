@@ -46,7 +46,7 @@ $router->group([ 'prefix' => '/api' ], function ($router) {
     });
 
     $router->group([ 'prefix' => '/option' ], function ($router) {
-        $router->post('/', 'OptionController@store');
+        $router->post('/', 'OptionController@index');
         $router->get('/{id}', 'OptionController@show');
         $router->put('/{id}', 'OptionController@update');
         $router->delete('/{id}', 'OptionController@delete');

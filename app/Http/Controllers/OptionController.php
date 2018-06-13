@@ -14,7 +14,12 @@ class OptionController extends Controller
 
     public function index()
     {
-        return response()->json(['data' => Order::all()->toArray()], 200);
+        $options = DB::select("
+        select distinct COLUMN_NAME
+        from information_schema.columns
+        where TABLE_SCHEMA='api'
+        ");
+        return response()->json(['data' => $options], 200);
     }
 
 
