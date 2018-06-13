@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Order;
 use App\Option;
+use DB;
 use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
