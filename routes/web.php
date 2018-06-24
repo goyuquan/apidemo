@@ -31,6 +31,13 @@ $router->group([ 'prefix' => '/api' ], function ($router) {
             $router->get('/{id}', 'ProductController@show');
             $router->post('/edit/{id}', 'ProductController@update');
         });
+        
+        $router->group([ 'prefix' => '/option' ], function ($router) {
+            $router->get('/', 'OptionController@index');
+            $router->get('/{id}', 'OptionController@show');
+            $router->put('/{id}', 'OptionController@update');
+            $router->delete('/{id}', 'OptionController@delete');
+        });
     });
 
     $router->group([ 'prefix' => '/auth' ], function ($router) {
@@ -43,13 +50,6 @@ $router->group([ 'prefix' => '/api' ], function ($router) {
         $router->get('/{id}', 'UserController@show');
         $router->put('/{id}', 'UserController@update');
         $router->delete('/{id}', 'UserController@delete');
-    });
-
-    $router->group([ 'prefix' => '/option' ], function ($router) {
-        $router->get('/', 'OptionController@index');
-        $router->get('/{id}', 'OptionController@show');
-        $router->put('/{id}', 'OptionController@update');
-        $router->delete('/{id}', 'OptionController@delete');
     });
 
 });
