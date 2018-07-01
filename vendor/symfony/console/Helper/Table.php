@@ -26,23 +26,29 @@ class Table
 {
     /**
      * Table headers.
+     *
+     * @var array
      */
     private $headers = array();
 
     /**
      * Table rows.
+     *
+     * @var array
      */
     private $rows = array();
 
     /**
      * Column widths cache.
+     *
+     * @var array
      */
     private $effectiveColumnWidths = array();
 
     /**
      * Number of columns cache.
      *
-     * @var int
+     * @var array
      */
     private $numberOfColumns;
 
@@ -263,7 +269,6 @@ class Table
      * Renders table to output.
      *
      * Example:
-     * <code>
      * +---------------+-----------------------+------------------+
      * | ISBN          | Title                 | Author           |
      * +---------------+-----------------------+------------------+
@@ -271,7 +276,6 @@ class Table
      * | 9971-5-0210-0 | A Tale of Two Cities  | Charles Dickens  |
      * | 960-425-059-0 | The Lord of the Rings | J. R. R. Tolkien |
      * +---------------+-----------------------+------------------+
-     * </code>
      */
     public function render()
     {
@@ -305,7 +309,7 @@ class Table
     /**
      * Renders horizontal header separator.
      *
-     * Example: <code>+-----+-----------+-------+</code>
+     * Example: +-----+-----------+-------+
      */
     private function renderRowSeparator()
     {
@@ -336,9 +340,12 @@ class Table
     /**
      * Renders table row.
      *
-     * Example: <code>| 9971-5-0210-0 | A Tale of Two Cities  | Charles Dickens  |</code>
+     * Example: | 9971-5-0210-0 | A Tale of Two Cities  | Charles Dickens  |
+     *
+     * @param array  $row
+     * @param string $cellFormat
      */
-    private function renderRow(array $row, string $cellFormat)
+    private function renderRow(array $row, $cellFormat)
     {
         if (empty($row)) {
             return;
@@ -354,8 +361,12 @@ class Table
 
     /**
      * Renders table cell with padding.
+     *
+     * @param array  $row
+     * @param int    $column
+     * @param string $cellFormat
      */
-    private function renderCell(array $row, int $column, string $cellFormat)
+    private function renderCell(array $row, $column, $cellFormat)
     {
         $cell = isset($row[$column]) ? $row[$column] : '';
         $width = $this->effectiveColumnWidths[$column];
@@ -443,15 +454,15 @@ class Table
     /**
      * fill rows that contains rowspan > 1.
      *
-     * @throws InvalidArgumentException
+     * @param array $rows
+     * @param int   $line
+     *
+     * @return array
      */
-    private function fillNextRows(array $rows, int $line): array
+    private function fillNextRows($rows, $line)
     {
         $unmergedRows = array();
         foreach ($rows[$line] as $column => $cell) {
-            if (null !== $cell && !$cell instanceof TableCell && !is_scalar($cell) && !(is_object($cell) && method_exists($cell, '__toString'))) {
-                throw new InvalidArgumentException(sprintf('A cell must be a TableCell, a scalar or an object implementing __toString, %s given.', gettype($cell)));
-            }
             if ($cell instanceof TableCell && $cell->getRowspan() > 1) {
                 $nbLines = $cell->getRowspan() - 1;
                 $lines = array($cell);
@@ -498,6 +509,10 @@ class Table
 
     /**
      * fill cells for a row that contains colspan > 1.
+     *
+     * @param array $row
+     *
+     * @return array
      */
     private function fillCells($row)
     {
@@ -515,7 +530,13 @@ class Table
         return $newRow ?: $row;
     }
 
-    private function copyRow(array $rows, int $line): array
+    /**
+     * @param array $rows
+     * @param int   $line
+     *
+     * @return array
+     */
+    private function copyRow($rows, $line)
     {
         $row = $rows[$line];
         foreach ($row as $cellKey => $cellValue) {
@@ -530,8 +551,12 @@ class Table
 
     /**
      * Gets number of columns by row.
+     *
+     * @param array $row
+     *
+     * @return int
      */
-    private function getNumberOfColumns(array $row): int
+    private function getNumberOfColumns(array $row)
     {
         $columns = count($row);
         foreach ($row as $column) {
@@ -543,8 +568,12 @@ class Table
 
     /**
      * Gets list of columns for the given row.
+     *
+     * @param array $row
+     *
+     * @return array
      */
-    private function getRowColumns(array $row): array
+    private function getRowColumns($row)
     {
         $columns = range(0, $this->numberOfColumns - 1);
         foreach ($row as $cellKey => $cell) {
@@ -559,8 +588,10 @@ class Table
 
     /**
      * Calculates columns widths.
+     *
+     * @param array $rows
      */
-    private function calculateColumnsWidth(array $rows)
+    private function calculateColumnsWidth($rows)
     {
         for ($column = 0; $column < $this->numberOfColumns; ++$column) {
             $lengths = array();
@@ -589,12 +620,25 @@ class Table
         }
     }
 
-    private function getColumnSeparatorWidth(): int
+    /**
+     * Gets column width.
+     *
+     * @return int
+     */
+    private function getColumnSeparatorWidth()
     {
         return strlen(sprintf($this->style->getBorderFormat(), $this->style->getVerticalBorderChar()));
     }
 
-    private function getCellWidth(array $row, int $column): int
+    /**
+     * Gets cell width.
+     *
+     * @param array $row
+     * @param int   $column
+     *
+     * @return int
+     */
+    private function getCellWidth(array $row, $column)
     {
         $cellWidth = 0;
 

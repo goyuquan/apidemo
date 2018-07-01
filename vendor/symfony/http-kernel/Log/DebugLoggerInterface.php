@@ -35,9 +35,4 @@ interface DebugLoggerInterface
      * @return int The number of errors
      */
     public function countErrors();
-
-    /**
-     * Removes all log records.
-     */
-    public function clear();
 }

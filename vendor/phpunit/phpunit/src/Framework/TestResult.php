@@ -13,19 +13,20 @@ namespace PHPUnit\Framework;
 use AssertionError;
 use Countable;
 use Error;
-use PHPUnit\Framework\MockObject\Exception as MockObjectException;
+use PHP_Invoker;
+use PHP_Invoker_TimeoutException;
+use PHP_Timer;
+use PHPUnit_Framework_MockObject_Exception;
 use PHPUnit\Util\Blacklist;
-use PHPUnit\Util\ErrorHandler;
+use PHPUnit\Util\InvalidArgumentHelper;
 use PHPUnit\Util\Printer;
+use ReflectionClass;
 use SebastianBergmann\CodeCoverage\CodeCoverage;
-use SebastianBergmann\CodeCoverage\CoveredCodeNotExecutedException as OriginalCoveredCodeNotExecutedException;
 use SebastianBergmann\CodeCoverage\Exception as OriginalCodeCoverageException;
+use SebastianBergmann\CodeCoverage\CoveredCodeNotExecutedException as OriginalCoveredCodeNotExecutedException;
 use SebastianBergmann\CodeCoverage\MissingCoversAnnotationException as OriginalMissingCoversAnnotationException;
 use SebastianBergmann\CodeCoverage\UnintentionallyCoveredCodeException;
-use SebastianBergmann\Invoker\Invoker;
-use SebastianBergmann\Invoker\TimeoutException;
 use SebastianBergmann\ResourceOperations\ResourceOperations;
-use SebastianBergmann\Timer\Timer;
 use Throwable;
 
 /**
@@ -190,7 +191,7 @@ class TestResult implements Countable
      *
      * @param TestListener $listener
      */
-    public function addListener(TestListener $listener): void
+    public function addListener(TestListener $listener)
     {
         $this->listeners[] = $listener;
     }
@@ -200,7 +201,7 @@ class TestResult implements Countable
      *
      * @param TestListener $listener
      */
-    public function removeListener(TestListener $listener): void
+    public function removeListener(TestListener $listener)
     {
         foreach ($this->listeners as $key => $_listener) {
             if ($listener === $_listener) {
@@ -212,7 +213,7 @@ class TestResult implements Countable
     /**
      * Flushes all flushable TestListeners.
      */
-    public function flushListeners(): void
+    public function flushListeners()
     {
         foreach ($this->listeners as $listener) {
             if ($listener instanceof Printer) {
@@ -228,7 +229,7 @@ class TestResult implements Countable
      * @param Throwable $t
      * @param float     $time
      */
-    public function addError(Test $test, Throwable $t, $time): void
+    public function addError(Test $test, Throwable $t, $time)
     {
         if ($t instanceof RiskyTest) {
             $this->risky[] = new TestFailure($test, $t);
@@ -285,7 +286,7 @@ class TestResult implements Countable
      * @param Warning $e
      * @param float   $time
      */
-    public function addWarning(Test $test, Warning $e, $time): void
+    public function addWarning(Test $test, Warning $e, $time)
     {
         if ($this->stopOnWarning) {
             $this->stop();
@@ -308,7 +309,7 @@ class TestResult implements Countable
      * @param AssertionFailedError $e
      * @param float                $time
      */
-    public function addFailure(Test $test, AssertionFailedError $e, $time): void
+    public function addFailure(Test $test, AssertionFailedError $e, $time)
     {
         if ($e instanceof RiskyTest || $e instanceof OutputError) {
             $this->risky[] = new TestFailure($test, $e);
@@ -353,11 +354,11 @@ class TestResult implements Countable
     }
 
     /**
-     * Informs the result that a test suite will be started.
+     * Informs the result that a testsuite will be started.
      *
      * @param TestSuite $suite
      */
-    public function startTestSuite(TestSuite $suite): void
+    public function startTestSuite(TestSuite $suite)
     {
         if ($this->topTestSuite === null) {
             $this->topTestSuite = $suite;
@@ -369,11 +370,11 @@ class TestResult implements Countable
     }
 
     /**
-     * Informs the result that a test suite was completed.
+     * Informs the result that a testsuite was completed.
      *
      * @param TestSuite $suite
      */
-    public function endTestSuite(TestSuite $suite): void
+    public function endTestSuite(TestSuite $suite)
     {
         foreach ($this->listeners as $listener) {
             $listener->endTestSuite($suite);
@@ -385,7 +386,7 @@ class TestResult implements Countable
      *
      * @param Test $test
      */
-    public function startTest(Test $test): void
+    public function startTest(Test $test)
     {
         $this->lastTestFailed = false;
         $this->runTests += \count($test);
@@ -400,10 +401,8 @@ class TestResult implements Countable
      *
      * @param Test  $test
      * @param float $time
-     *
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function endTest(Test $test, $time): void
+    public function endTest(Test $test, $time)
     {
         foreach ($this->listeners as $listener) {
             $listener->endTest($test, $time);
@@ -430,7 +429,7 @@ class TestResult implements Countable
      *
      * @return bool
      */
-    public function allHarmless(): bool
+    public function allHarmless()
     {
         return $this->riskyCount() == 0;
     }
@@ -440,7 +439,7 @@ class TestResult implements Countable
      *
      * @return int
      */
-    public function riskyCount(): int
+    public function riskyCount()
     {
         return \count($this->risky);
     }
@@ -450,7 +449,7 @@ class TestResult implements Countable
      *
      * @return bool
      */
-    public function allCompletelyImplemented(): bool
+    public function allCompletelyImplemented()
     {
         return $this->notImplementedCount() == 0;
     }
@@ -460,7 +459,7 @@ class TestResult implements Countable
      *
      * @return int
      */
-    public function notImplementedCount(): int
+    public function notImplementedCount()
     {
         return \count($this->notImplemented);
     }
@@ -470,7 +469,7 @@ class TestResult implements Countable
      *
      * @return array
      */
-    public function risky(): array
+    public function risky()
     {
         return $this->risky;
     }
@@ -480,7 +479,7 @@ class TestResult implements Countable
      *
      * @return array
      */
-    public function notImplemented(): array
+    public function notImplemented()
     {
         return $this->notImplemented;
     }
@@ -490,7 +489,7 @@ class TestResult implements Countable
      *
      * @return bool
      */
-    public function noneSkipped(): bool
+    public function noneSkipped()
     {
         return $this->skippedCount() == 0;
     }
@@ -500,7 +499,7 @@ class TestResult implements Countable
      *
      * @return int
      */
-    public function skippedCount(): int
+    public function skippedCount()
     {
         return \count($this->skipped);
     }
@@ -510,7 +509,7 @@ class TestResult implements Countable
      *
      * @return array
      */
-    public function skipped(): array
+    public function skipped()
     {
         return $this->skipped;
     }
@@ -520,7 +519,7 @@ class TestResult implements Countable
      *
      * @return int
      */
-    public function errorCount(): int
+    public function errorCount()
     {
         return \count($this->errors);
     }
@@ -530,7 +529,7 @@ class TestResult implements Countable
      *
      * @return array
      */
-    public function errors(): array
+    public function errors()
     {
         return $this->errors;
     }
@@ -540,7 +539,7 @@ class TestResult implements Countable
      *
      * @return int
      */
-    public function failureCount(): int
+    public function failureCount()
     {
         return \count($this->failures);
     }
@@ -550,7 +549,7 @@ class TestResult implements Countable
      *
      * @return array
      */
-    public function failures(): array
+    public function failures()
     {
         return $this->failures;
     }
@@ -560,7 +559,7 @@ class TestResult implements Countable
      *
      * @return int
      */
-    public function warningCount(): int
+    public function warningCount()
     {
         return \count($this->warnings);
     }
@@ -570,7 +569,7 @@ class TestResult implements Countable
      *
      * @return array
      */
-    public function warnings(): array
+    public function warnings()
     {
         return $this->warnings;
     }
@@ -580,7 +579,7 @@ class TestResult implements Countable
      *
      * @return array
      */
-    public function passed(): array
+    public function passed()
     {
         return $this->passed;
     }
@@ -590,7 +589,7 @@ class TestResult implements Countable
      *
      * @return TestSuite
      */
-    public function topTestSuite(): TestSuite
+    public function topTestSuite()
     {
         return $this->topTestSuite;
     }
@@ -600,7 +599,7 @@ class TestResult implements Countable
      *
      * @return bool If code coverage should be collected
      */
-    public function getCollectCodeCoverageInformation(): bool
+    public function getCollectCodeCoverageInformation()
     {
         return $this->codeCoverage !== null;
     }
@@ -609,17 +608,8 @@ class TestResult implements Countable
      * Runs a TestCase.
      *
      * @param Test $test
-     *
-     * @throws CodeCoverageException
-     * @throws OriginalCoveredCodeNotExecutedException
-     * @throws OriginalMissingCoversAnnotationException
-     * @throws UnintentionallyCoveredCodeException
-     * @throws \ReflectionException
-     * @throws \SebastianBergmann\CodeCoverage\InvalidArgumentException
-     * @throws \SebastianBergmann\CodeCoverage\RuntimeException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      */
-    public function run(Test $test): void
+    public function run(Test $test)
     {
         Assert::resetCount();
 
@@ -650,7 +640,7 @@ class TestResult implements Countable
 
         if ($this->convertErrorsToExceptions) {
             $oldErrorHandler = \set_error_handler(
-                [ErrorHandler::class, 'handleError'],
+                [\PHPUnit\Util\ErrorHandler::class, 'handleError'],
                 E_ALL | E_STRICT
             );
 
@@ -678,36 +668,33 @@ class TestResult implements Countable
             \xdebug_start_function_monitor(ResourceOperations::getFunctions());
         }
 
-        Timer::start();
+        PHP_Timer::start();
 
         try {
             if (!$test instanceof WarningTestCase &&
                 $test->getSize() != \PHPUnit\Util\Test::UNKNOWN &&
                 $this->enforceTimeLimit &&
-                \extension_loaded('pcntl') && \class_exists(Invoker::class)) {
+                \extension_loaded('pcntl') && \class_exists('PHP_Invoker')) {
                 switch ($test->getSize()) {
                     case \PHPUnit\Util\Test::SMALL:
                         $_timeout = $this->timeoutForSmallTests;
-
                         break;
 
                     case \PHPUnit\Util\Test::MEDIUM:
                         $_timeout = $this->timeoutForMediumTests;
-
                         break;
 
                     case \PHPUnit\Util\Test::LARGE:
                         $_timeout = $this->timeoutForLargeTests;
-
                         break;
                 }
 
-                $invoker = new Invoker;
+                $invoker = new PHP_Invoker;
                 $invoker->invoke([$test, 'runBare'], [], $_timeout);
             } else {
                 $test->runBare();
             }
-        } catch (TimeoutException $e) {
+        } catch (PHP_Invoker_TimeoutException $e) {
             $this->addFailure(
                 $test,
                 new RiskyTestError(
@@ -717,7 +704,7 @@ class TestResult implements Countable
             );
 
             $risky = true;
-        } catch (MockObjectException $e) {
+        } catch (PHPUnit_Framework_MockObject_Exception $e) {
             $e = new Warning(
                 $e->getMessage()
             );
@@ -756,7 +743,7 @@ class TestResult implements Countable
             $error = true;
         }
 
-        $time = Timer::stop();
+        $time = PHP_Timer::stop();
         $test->addToAssertionCount(Assert::getCount());
 
         if ($monitorFunctions) {
@@ -910,7 +897,7 @@ class TestResult implements Countable
      *
      * @return int
      */
-    public function count(): int
+    public function count()
     {
         return $this->runTests;
     }
@@ -920,7 +907,7 @@ class TestResult implements Countable
      *
      * @return bool
      */
-    public function shouldStop(): bool
+    public function shouldStop()
     {
         return $this->stop;
     }
@@ -928,7 +915,7 @@ class TestResult implements Countable
     /**
      * Marks that the test run should stop.
      */
-    public function stop(): void
+    public function stop()
     {
         $this->stop = true;
     }
@@ -938,7 +925,7 @@ class TestResult implements Countable
      *
      * @return CodeCoverage
      */
-    public function getCodeCoverage(): ?CodeCoverage
+    public function getCodeCoverage()
     {
         return $this->codeCoverage;
     }
@@ -948,7 +935,7 @@ class TestResult implements Countable
      *
      * @param CodeCoverage $codeCoverage
      */
-    public function setCodeCoverage(CodeCoverage $codeCoverage): void
+    public function setCodeCoverage(CodeCoverage $codeCoverage)
     {
         $this->codeCoverage = $codeCoverage;
     }
@@ -957,16 +944,24 @@ class TestResult implements Countable
      * Enables or disables the error-to-exception conversion.
      *
      * @param bool $flag
+     *
+     * @throws Exception
      */
-    public function convertErrorsToExceptions(bool $flag): void
+    public function convertErrorsToExceptions($flag)
     {
+        if (!\is_bool($flag)) {
+            throw InvalidArgumentHelper::factory(1, 'boolean');
+        }
+
         $this->convertErrorsToExceptions = $flag;
     }
 
     /**
      * Returns the error-to-exception conversion setting.
+     *
+     * @return bool
      */
-    public function getConvertErrorsToExceptions(): bool
+    public function getConvertErrorsToExceptions()
     {
         return $this->convertErrorsToExceptions;
     }
@@ -975,9 +970,15 @@ class TestResult implements Countable
      * Enables or disables the stopping when an error occurs.
      *
      * @param bool $flag
+     *
+     * @throws Exception
      */
-    public function stopOnError(bool $flag): void
+    public function stopOnError($flag)
     {
+        if (!\is_bool($flag)) {
+            throw InvalidArgumentHelper::factory(1, 'boolean');
+        }
+
         $this->stopOnError = $flag;
     }
 
@@ -985,9 +986,15 @@ class TestResult implements Countable
      * Enables or disables the stopping when a failure occurs.
      *
      * @param bool $flag
+     *
+     * @throws Exception
      */
-    public function stopOnFailure(bool $flag): void
+    public function stopOnFailure($flag)
     {
+        if (!\is_bool($flag)) {
+            throw InvalidArgumentHelper::factory(1, 'boolean');
+        }
+
         $this->stopOnFailure = $flag;
     }
 
@@ -995,88 +1002,124 @@ class TestResult implements Countable
      * Enables or disables the stopping when a warning occurs.
      *
      * @param bool $flag
+     *
+     * @throws Exception
      */
-    public function stopOnWarning(bool $flag): void
+    public function stopOnWarning($flag)
     {
+        if (!\is_bool($flag)) {
+            throw InvalidArgumentHelper::factory(1, 'boolean');
+        }
+
         $this->stopOnWarning = $flag;
     }
 
     /**
      * @param bool $flag
+     *
+     * @throws Exception
      */
-    public function beStrictAboutTestsThatDoNotTestAnything(bool $flag): void
+    public function beStrictAboutTestsThatDoNotTestAnything($flag)
     {
+        if (!\is_bool($flag)) {
+            throw InvalidArgumentHelper::factory(1, 'boolean');
+        }
+
         $this->beStrictAboutTestsThatDoNotTestAnything = $flag;
     }
 
     /**
      * @return bool
      */
-    public function isStrictAboutTestsThatDoNotTestAnything(): bool
+    public function isStrictAboutTestsThatDoNotTestAnything()
     {
         return $this->beStrictAboutTestsThatDoNotTestAnything;
     }
 
     /**
      * @param bool $flag
+     *
+     * @throws Exception
      */
-    public function beStrictAboutOutputDuringTests(bool $flag): void
+    public function beStrictAboutOutputDuringTests($flag)
     {
+        if (!\is_bool($flag)) {
+            throw InvalidArgumentHelper::factory(1, 'boolean');
+        }
+
         $this->beStrictAboutOutputDuringTests = $flag;
     }
 
     /**
      * @return bool
      */
-    public function isStrictAboutOutputDuringTests(): bool
+    public function isStrictAboutOutputDuringTests()
     {
         return $this->beStrictAboutOutputDuringTests;
     }
 
     /**
      * @param bool $flag
+     *
+     * @throws Exception
      */
-    public function beStrictAboutResourceUsageDuringSmallTests(bool $flag): void
+    public function beStrictAboutResourceUsageDuringSmallTests($flag)
     {
+        if (!\is_bool($flag)) {
+            throw InvalidArgumentHelper::factory(1, 'boolean');
+        }
+
         $this->beStrictAboutResourceUsageDuringSmallTests = $flag;
     }
 
     /**
      * @return bool
      */
-    public function isStrictAboutResourceUsageDuringSmallTests(): bool
+    public function isStrictAboutResourceUsageDuringSmallTests()
     {
         return $this->beStrictAboutResourceUsageDuringSmallTests;
     }
 
     /**
      * @param bool $flag
+     *
+     * @throws Exception
      */
-    public function enforceTimeLimit(bool $flag): void
+    public function enforceTimeLimit($flag)
     {
+        if (!\is_bool($flag)) {
+            throw InvalidArgumentHelper::factory(1, 'boolean');
+        }
+
         $this->enforceTimeLimit = $flag;
     }
 
     /**
      * @return bool
      */
-    public function enforcesTimeLimit(): bool
+    public function enforcesTimeLimit()
     {
         return $this->enforceTimeLimit;
     }
 
     /**
      * @param bool $flag
+     *
+     * @throws Exception
      */
-    public function beStrictAboutTodoAnnotatedTests(bool $flag): void
+    public function beStrictAboutTodoAnnotatedTests($flag)
     {
+        if (!\is_bool($flag)) {
+            throw InvalidArgumentHelper::factory(1, 'boolean');
+        }
+
         $this->beStrictAboutTodoAnnotatedTests = $flag;
     }
 
     /**
      * @return bool
      */
-    public function isStrictAboutTodoAnnotatedTests(): bool
+    public function isStrictAboutTodoAnnotatedTests()
     {
         return $this->beStrictAboutTodoAnnotatedTests;
     }
@@ -1085,9 +1128,15 @@ class TestResult implements Countable
      * Enables or disables the stopping for risky tests.
      *
      * @param bool $flag
+     *
+     * @throws Exception
      */
-    public function stopOnRisky(bool $flag): void
+    public function stopOnRisky($flag)
     {
+        if (!\is_bool($flag)) {
+            throw InvalidArgumentHelper::factory(1, 'boolean');
+        }
+
         $this->stopOnRisky = $flag;
     }
 
@@ -1095,9 +1144,15 @@ class TestResult implements Countable
      * Enables or disables the stopping for incomplete tests.
      *
      * @param bool $flag
+     *
+     * @throws Exception
      */
-    public function stopOnIncomplete(bool $flag): void
+    public function stopOnIncomplete($flag)
     {
+        if (!\is_bool($flag)) {
+            throw InvalidArgumentHelper::factory(1, 'boolean');
+        }
+
         $this->stopOnIncomplete = $flag;
     }
 
@@ -1105,9 +1160,15 @@ class TestResult implements Countable
      * Enables or disables the stopping for skipped tests.
      *
      * @param bool $flag
+     *
+     * @throws Exception
      */
-    public function stopOnSkipped(bool $flag): void
+    public function stopOnSkipped($flag)
     {
+        if (!\is_bool($flag)) {
+            throw InvalidArgumentHelper::factory(1, 'boolean');
+        }
+
         $this->stopOnSkipped = $flag;
     }
 
@@ -1116,7 +1177,7 @@ class TestResult implements Countable
      *
      * @return float
      */
-    public function time(): float
+    public function time()
     {
         return $this->time;
     }
@@ -1126,7 +1187,7 @@ class TestResult implements Countable
      *
      * @return bool
      */
-    public function wasSuccessful(): bool
+    public function wasSuccessful()
     {
         return empty($this->errors) && empty($this->failures) && empty($this->warnings);
     }
@@ -1135,9 +1196,15 @@ class TestResult implements Countable
      * Sets the timeout for small tests.
      *
      * @param int $timeout
+     *
+     * @throws Exception
      */
-    public function setTimeoutForSmallTests(int $timeout): void
+    public function setTimeoutForSmallTests($timeout)
     {
+        if (!\is_int($timeout)) {
+            throw InvalidArgumentHelper::factory(1, 'integer');
+        }
+
         $this->timeoutForSmallTests = $timeout;
     }
 
@@ -1145,9 +1212,15 @@ class TestResult implements Countable
      * Sets the timeout for medium tests.
      *
      * @param int $timeout
+     *
+     * @throws Exception
      */
-    public function setTimeoutForMediumTests(int $timeout): void
+    public function setTimeoutForMediumTests($timeout)
     {
+        if (!\is_int($timeout)) {
+            throw InvalidArgumentHelper::factory(1, 'integer');
+        }
+
         $this->timeoutForMediumTests = $timeout;
     }
 
@@ -1155,9 +1228,15 @@ class TestResult implements Countable
      * Sets the timeout for large tests.
      *
      * @param int $timeout
+     *
+     * @throws Exception
      */
-    public function setTimeoutForLargeTests(int $timeout): void
+    public function setTimeoutForLargeTests($timeout)
     {
+        if (!\is_int($timeout)) {
+            throw InvalidArgumentHelper::factory(1, 'integer');
+        }
+
         $this->timeoutForLargeTests = $timeout;
     }
 
@@ -1166,7 +1245,7 @@ class TestResult implements Countable
      *
      * @return int
      */
-    public function getTimeoutForLargeTests(): int
+    public function getTimeoutForLargeTests()
     {
         return $this->timeoutForLargeTests;
     }
@@ -1174,8 +1253,55 @@ class TestResult implements Countable
     /**
      * @param bool $flag
      */
-    public function setRegisterMockObjectsFromTestArgumentsRecursively(bool $flag): void
+    public function setRegisterMockObjectsFromTestArgumentsRecursively($flag)
     {
+        if (!\is_bool($flag)) {
+            throw InvalidArgumentHelper::factory(1, 'boolean');
+        }
+
         $this->registerMockObjectsFromTestArgumentsRecursively = $flag;
+    }
+
+    /**
+     * Returns the class hierarchy for a given class.
+     *
+     * @param string $className
+     * @param bool   $asReflectionObjects
+     *
+     * @return array
+     */
+    protected function getHierarchy($className, $asReflectionObjects = false)
+    {
+        if ($asReflectionObjects) {
+            $classes = [new ReflectionClass($className)];
+        } else {
+            $classes = [$className];
+        }
+
+        $done = false;
+
+        while (!$done) {
+            if ($asReflectionObjects) {
+                $class = new ReflectionClass(
+                    $classes[\count($classes) - 1]->getName()
+                );
+            } else {
+                $class = new ReflectionClass($classes[\count($classes) - 1]);
+            }
+
+            $parent = $class->getParentClass();
+
+            if ($parent !== false) {
+                if ($asReflectionObjects) {
+                    $classes[] = $parent;
+                } else {
+                    $classes[] = $parent->getName();
+                }
+            } else {
+                $done = true;
+            }
+        }
+
+        return $classes;
     }
 }

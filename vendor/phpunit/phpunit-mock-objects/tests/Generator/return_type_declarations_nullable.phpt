@@ -1,5 +1,9 @@
 --TEST--
-\PHPUnit\Framework\MockObject\Generator::generate('Foo', [], 'MockFoo', true, true)
+PHPUnit_Framework_MockObject_Generator::generate('Foo', array(), 'MockFoo', true, true)
+--SKIPIF--
+<?php
+if (!version_compare(PHP_VERSION, '7.1', '>=')) print 'skip: PHP >= 7.1 required';
+?>
 --FILE--
 <?php
 interface Foo
@@ -9,11 +13,11 @@ interface Foo
 
 require __DIR__ . '/../../vendor/autoload.php';
 
-$generator = new \PHPUnit\Framework\MockObject\Generator;
+$generator = new PHPUnit_Framework_MockObject_Generator;
 
 $mock = $generator->generate(
     'Foo',
-    [],
+    array(),
     'MockFoo',
     true,
     true
@@ -21,8 +25,8 @@ $mock = $generator->generate(
 
 print $mock['code'];
 ?>
---EXPECT--
-class MockFoo implements PHPUnit\Framework\MockObject\MockObject, Foo
+--EXPECTF--
+class MockFoo implements PHPUnit_Framework_MockObject_MockObject, Foo
 {
     private $__phpunit_invocationMocker;
     private $__phpunit_originalObject;
@@ -35,7 +39,7 @@ class MockFoo implements PHPUnit\Framework\MockObject\MockObject, Foo
 
     public function bar(string $baz): ?string
     {
-        $arguments = [$baz];
+        $arguments = array($baz);
         $count     = func_num_args();
 
         if ($count > 1) {
@@ -47,7 +51,7 @@ class MockFoo implements PHPUnit\Framework\MockObject\MockObject, Foo
         }
 
         $result = $this->__phpunit_getInvocationMocker()->invoke(
-            new \PHPUnit\Framework\MockObject\Invocation\ObjectInvocation(
+            new PHPUnit_Framework_MockObject_Invocation_Object(
                 'Foo', 'bar', $arguments, '?string', $this, true
             )
         );
@@ -55,17 +59,16 @@ class MockFoo implements PHPUnit\Framework\MockObject\MockObject, Foo
         return $result;
     }
 
-    public function expects(\PHPUnit\Framework\MockObject\Matcher\Invocation $matcher)
+    public function expects(PHPUnit_Framework_MockObject_Matcher_Invocation $matcher)
     {
         return $this->__phpunit_getInvocationMocker()->expects($matcher);
     }
 
     public function method()
     {
-        $any     = new \PHPUnit\Framework\MockObject\Matcher\AnyInvokedCount;
+        $any = new PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount;
         $expects = $this->expects($any);
-
-        return call_user_func_array([$expects, 'method'], func_get_args());
+        return call_user_func_array(array($expects, 'method'), func_get_args());
     }
 
     public function __phpunit_setOriginalObject($originalObject)
@@ -76,7 +79,7 @@ class MockFoo implements PHPUnit\Framework\MockObject\MockObject, Foo
     public function __phpunit_getInvocationMocker()
     {
         if ($this->__phpunit_invocationMocker === null) {
-            $this->__phpunit_invocationMocker = new \PHPUnit\Framework\MockObject\InvocationMocker($this->__phpunit_configurable);
+            $this->__phpunit_invocationMocker = new PHPUnit_Framework_MockObject_InvocationMocker($this->__phpunit_configurable);
         }
 
         return $this->__phpunit_invocationMocker;

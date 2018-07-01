@@ -5,7 +5,7 @@ class ClonedDependencyTest extends TestCase
 {
     private static $dependency;
 
-    public static function setUpBeforeClass(): void
+    public static function setUpBeforeClass()
     {
         self::$dependency = new stdClass;
     }
@@ -37,22 +37,6 @@ class ClonedDependencyTest extends TestCase
      * @depends clone testOne
      */
     public function testFour($dependency)
-    {
-        $this->assertNotSame(self::$dependency, $dependency);
-    }
-
-    /**
-     * @depends !shallowClone testOne
-     */
-    public function testFive($dependency)
-    {
-        $this->assertSame(self::$dependency, $dependency);
-    }
-
-    /**
-     * @depends shallowClone testOne
-     */
-    public function testSix($dependency)
     {
         $this->assertNotSame(self::$dependency, $dependency);
     }

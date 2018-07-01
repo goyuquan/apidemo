@@ -133,7 +133,7 @@ class Router
                 : trim($new['namespace'], '\\');
         }
 
-        return $old['namespace'] ?? null;
+        return isset($old['namespace']) ? $old['namespace'] : null;
     }
 
     /**
@@ -145,7 +145,7 @@ class Router
      */
     protected static function formatGroupPrefix($new, $old)
     {
-        $oldPrefix = $old['prefix'] ?? null;
+        $oldPrefix = isset($old['prefix']) ? $old['prefix'] : null;
 
         if (isset($new['prefix'])) {
             return trim($oldPrefix, '/').'/'.trim($new['prefix'], '/');
@@ -239,9 +239,9 @@ class Router
      */
     protected function mergeGroupAttributes(array $action, array $attributes)
     {
-        $namespace = $attributes['namespace'] ?? null;
-        $middleware = $attributes['middleware'] ?? null;
-        $as = $attributes['as'] ?? null;
+        $namespace = isset($attributes['namespace']) ? $attributes['namespace'] : null;
+        $middleware = isset($attributes['middleware']) ? $attributes['middleware'] : null;
+        $as = isset($attributes['as']) ? $attributes['as'] : null;
 
         return $this->mergeNamespaceGroup(
             $this->mergeMiddlewareGroup(
@@ -305,20 +305,6 @@ class Router
         }
 
         return $action;
-    }
-
-    /**
-     * Register a route with the application.
-     *
-     * @param  string  $uri
-     * @param  mixed  $action
-     * @return $this
-     */
-    public function head($uri, $action)
-    {
-        $this->addRoute('HEAD', $uri, $action);
-
-        return $this;
     }
 
     /**

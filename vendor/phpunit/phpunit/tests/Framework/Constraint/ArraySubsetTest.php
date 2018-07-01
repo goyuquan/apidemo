@@ -10,21 +10,18 @@
 
 namespace PHPUnit\Framework\Constraint;
 
-use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\TestCase;
 
-class ArraySubsetTest extends ConstraintTestCase
+class ArraySubsetTest extends TestCase
 {
     /**
      * @param bool               $expected
      * @param array|\Traversable $subset
      * @param array|\Traversable $other
      * @param bool               $strict
-     *
-     * @throws ExpectationFailedException
-     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
      * @dataProvider evaluateDataProvider
      */
-    public function testEvaluate($expected, $subset, $other, $strict): void
+    public function testEvaluate($expected, $subset, $other, $strict)
     {
         $constraint = new ArraySubset($subset, $strict);
 
@@ -61,27 +58,12 @@ class ArraySubsetTest extends ConstraintTestCase
         ];
     }
 
-    public function testEvaluateWithArrayAccess(): void
+    public function testEvaluateWithArrayAccess()
     {
         $arrayAccess = new \ArrayAccessible(['foo' => 'bar']);
 
         $constraint = new ArraySubset(['foo' => 'bar']);
 
         $this->assertTrue($constraint->evaluate($arrayAccess, '', true));
-    }
-
-    public function testEvaluateFailMessage(): void
-    {
-        $constraint = new ArraySubset(['foo' => 'bar']);
-
-        try {
-            $constraint->evaluate(['baz' => 'bar'], '', false);
-            $this->fail(\sprintf('Expected %s to be thrown.', ExpectationFailedException::class));
-        } catch (ExpectationFailedException $expectedException) {
-            $comparisonFailure = $expectedException->getComparisonFailure();
-            $this->assertNotNull($comparisonFailure);
-            $this->assertContains('[foo] => bar', $comparisonFailure->getExpectedAsString());
-            $this->assertContains('[baz] => bar', $comparisonFailure->getActualAsString());
-        }
     }
 }

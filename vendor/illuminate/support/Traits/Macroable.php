@@ -6,6 +6,7 @@ use Closure;
 use ReflectionClass;
 use ReflectionMethod;
 use BadMethodCallException;
+use Illuminate\Contracts\Support\Macro;
 
 trait Macroable
 {
@@ -71,9 +72,7 @@ trait Macroable
     public static function __callStatic($method, $parameters)
     {
         if (! static::hasMacro($method)) {
-            throw new BadMethodCallException(sprintf(
-                'Method %s::%s does not exist.', static::class, $method
-            ));
+            throw new BadMethodCallException("Method {$method} does not exist.");
         }
 
         if (static::$macros[$method] instanceof Closure) {
@@ -95,9 +94,7 @@ trait Macroable
     public function __call($method, $parameters)
     {
         if (! static::hasMacro($method)) {
-            throw new BadMethodCallException(sprintf(
-                'Method %s::%s does not exist.', static::class, $method
-            ));
+            throw new BadMethodCallException("Method {$method} does not exist.");
         }
 
         $macro = static::$macros[$method];

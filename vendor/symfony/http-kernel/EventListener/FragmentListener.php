@@ -35,10 +35,12 @@ class FragmentListener implements EventSubscriberInterface
     private $fragmentPath;
 
     /**
+     * Constructor.
+     *
      * @param UriSigner $signer       A UriSigner instance
      * @param string    $fragmentPath The path that triggers this listener
      */
-    public function __construct(UriSigner $signer, string $fragmentPath = '/_fragment')
+    public function __construct(UriSigner $signer, $fragmentPath = '/_fragment')
     {
         $this->signer = $signer;
         $this->fragmentPath = $fragmentPath;
@@ -47,7 +49,9 @@ class FragmentListener implements EventSubscriberInterface
     /**
      * Fixes request attributes when the path is '/_fragment'.
      *
-     * @throws AccessDeniedHttpException if the request does not come from a trusted IP
+     * @param GetResponseEvent $event A GetResponseEvent instance
+     *
+     * @throws AccessDeniedHttpException if the request does not come from a trusted IP.
      */
     public function onKernelRequest(GetResponseEvent $event)
     {

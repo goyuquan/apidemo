@@ -29,6 +29,8 @@ abstract class AbstractSurrogateFragmentRenderer extends RoutableFragmentRendere
     private $signer;
 
     /**
+     * Constructor.
+     *
      * The "fallback" strategy when surrogate is not available should always be an
      * instance of InlineFragmentRenderer.
      *
@@ -63,7 +65,7 @@ abstract class AbstractSurrogateFragmentRenderer extends RoutableFragmentRendere
     {
         if (!$this->surrogate || !$this->surrogate->hasSurrogateCapability($request)) {
             if ($uri instanceof ControllerReference && $this->containsNonScalars($uri->attributes)) {
-                throw new \InvalidArgumentException('Passing non-scalar values as part of URI attributes to the ESI and SSI rendering strategies is not supported. Use a different rendering strategy or pass scalar values.');
+                @trigger_error('Passing non-scalar values as part of URI attributes to the ESI and SSI rendering strategies is deprecated since version 3.1, and will be removed in 4.0. Use a different rendering strategy or pass scalar values.', E_USER_DEPRECATED);
             }
 
             return $this->inlineStrategy->render($uri, $request, $options);
@@ -83,7 +85,7 @@ abstract class AbstractSurrogateFragmentRenderer extends RoutableFragmentRendere
         return new Response($tag);
     }
 
-    private function generateSignedFragmentUri($uri, Request $request): string
+    private function generateSignedFragmentUri($uri, Request $request)
     {
         if (null === $this->signer) {
             throw new \LogicException('You must use a URI when using the ESI rendering strategy or set a URL signer.');
@@ -95,11 +97,11 @@ abstract class AbstractSurrogateFragmentRenderer extends RoutableFragmentRendere
         return substr($fragmentUri, strlen($request->getSchemeAndHttpHost()));
     }
 
-    private function containsNonScalars(array $values): bool
+    private function containsNonScalars(array $values)
     {
         foreach ($values as $value) {
-            if (is_array($value)) {
-                return $this->containsNonScalars($value);
+            if (is_array($value) && $this->containsNonScalars($value)) {
+                return true;
             } elseif (!is_scalar($value) && null !== $value) {
                 return true;
             }

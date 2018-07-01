@@ -22,11 +22,13 @@ class SplFileInfo extends \SplFileInfo
     private $relativePathname;
 
     /**
+     * Constructor.
+     *
      * @param string $file             The file name
      * @param string $relativePath     The relative path
      * @param string $relativePathname The relative path name
      */
-    public function __construct(string $file, string $relativePath, string $relativePathname)
+    public function __construct($file, $relativePath, $relativePathname)
     {
         parent::__construct($file);
         $this->relativePath = $relativePath;

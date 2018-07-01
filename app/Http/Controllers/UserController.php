@@ -101,6 +101,7 @@ class UserController extends Controller
             'password' => 'required'
         ]);
 
+
         $user = User::where('phone', $request->input('phone'))->first();
 
         if(Hash::check($request->input('password'), $user->password)){

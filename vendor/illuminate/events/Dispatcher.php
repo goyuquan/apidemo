@@ -37,13 +37,6 @@ class Dispatcher implements DispatcherContract
     protected $wildcards = [];
 
     /**
-     * The cached wildcard listeners.
-     *
-     * @var array
-     */
-    protected $wildcardsCache = [];
-
-    /**
      * The queue resolver instance.
      *
      * @var callable
@@ -89,8 +82,6 @@ class Dispatcher implements DispatcherContract
     protected function setupWildcardListen($event, $listener)
     {
         $this->wildcards[$event][] = $this->makeListener($listener, true);
-
-        $this->wildcardsCache = [];
     }
 
     /**
@@ -291,8 +282,7 @@ class Dispatcher implements DispatcherContract
         $listeners = $this->listeners[$eventName] ?? [];
 
         $listeners = array_merge(
-            $listeners,
-            $this->wildcardsCache[$eventName] ?? $this->getWildcardListeners($eventName)
+            $listeners, $this->getWildcardListeners($eventName)
         );
 
         return class_exists($eventName, false)
@@ -316,7 +306,7 @@ class Dispatcher implements DispatcherContract
             }
         }
 
-        return $this->wildcardsCache[$eventName] = $wildcards;
+        return $wildcards;
     }
 
     /**
@@ -355,9 +345,9 @@ class Dispatcher implements DispatcherContract
         return function ($event, $payload) use ($listener, $wildcard) {
             if ($wildcard) {
                 return $listener($event, $payload);
+            } else {
+                return $listener(...array_values($payload));
             }
-
-            return $listener(...array_values($payload));
         };
     }
 
@@ -373,11 +363,11 @@ class Dispatcher implements DispatcherContract
         return function ($event, $payload) use ($listener, $wildcard) {
             if ($wildcard) {
                 return call_user_func($this->createClassCallable($listener), $event, $payload);
+            } else {
+                return call_user_func_array(
+                    $this->createClassCallable($listener), $payload
+                );
             }
-
-            return call_user_func_array(
-                $this->createClassCallable($listener), $payload
-            );
         };
     }
 
@@ -393,9 +383,9 @@ class Dispatcher implements DispatcherContract
 
         if ($this->handlerShouldBeQueued($class)) {
             return $this->createQueuedHandlerCallable($class, $method);
+        } else {
+            return [$this->container->make($class), $method];
         }
-
-        return [$this->container->make($class), $method];
     }
 
     /**

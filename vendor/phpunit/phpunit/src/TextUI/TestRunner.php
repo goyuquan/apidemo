@@ -14,18 +14,18 @@ use PHPUnit\Framework\Error\Deprecated;
 use PHPUnit\Framework\Error\Notice;
 use PHPUnit\Framework\Error\Warning;
 use PHPUnit\Framework\Exception;
-use PHPUnit\Framework\Test;
-use PHPUnit\Framework\TestListener;
-use PHPUnit\Framework\TestResult;
 use PHPUnit\Framework\TestSuite;
+use PHPUnit\Framework\TestResult;
+use PHPUnit\Framework\TestListener;
+use PHPUnit\Framework\Test;
 use PHPUnit\Runner\BaseTestRunner;
-use PHPUnit\Runner\Filter\ExcludeGroupFilterIterator;
 use PHPUnit\Runner\Filter\Factory;
-use PHPUnit\Runner\Filter\IncludeGroupFilterIterator;
-use PHPUnit\Runner\Filter\NameFilterIterator;
-use PHPUnit\Runner\StandardTestSuiteLoader;
-use PHPUnit\Runner\TestSuiteLoader;
 use PHPUnit\Runner\Version;
+use PHPUnit\Runner\TestSuiteLoader;
+use PHPUnit\Runner\StandardTestSuiteLoader;
+use PHPUnit\Runner\Filter\NameFilterIterator;
+use PHPUnit\Runner\Filter\ExcludeGroupFilterIterator;
+use PHPUnit\Runner\Filter\IncludeGroupFilterIterator;
 use PHPUnit\Util\Configuration;
 use PHPUnit\Util\Log\JUnit;
 use PHPUnit\Util\Log\TeamCity;
@@ -52,9 +52,9 @@ use SebastianBergmann\Environment\Runtime;
  */
 class TestRunner extends BaseTestRunner
 {
-    public const SUCCESS_EXIT   = 0;
-    public const FAILURE_EXIT   = 1;
-    public const EXCEPTION_EXIT = 2;
+    const SUCCESS_EXIT   = 0;
+    const FAILURE_EXIT   = 1;
+    const EXCEPTION_EXIT = 2;
 
     /**
      * @var CodeCoverageFilter
@@ -102,18 +102,14 @@ class TestRunner extends BaseTestRunner
     }
 
     /**
-     * @param ReflectionClass|Test $test
+     * @param Test|ReflectionClass $test
      * @param array                $arguments
-     * @param bool                 $exit
-     *
-     * @throws \RuntimeException
-     * @throws \InvalidArgumentException
-     * @throws Exception
-     * @throws \ReflectionException
      *
      * @return TestResult
+     *
+     * @throws Exception
      */
-    public static function run($test, array $arguments = [], $exit = true): TestResult
+    public static function run($test, array $arguments = [])
     {
         if ($test instanceof ReflectionClass) {
             $test = new TestSuite($test);
@@ -124,8 +120,7 @@ class TestRunner extends BaseTestRunner
 
             return $aTestRunner->doRun(
                 $test,
-                $arguments,
-                $exit
+                $arguments
             );
         }
 
@@ -133,18 +128,59 @@ class TestRunner extends BaseTestRunner
     }
 
     /**
+     * @return TestResult
+     */
+    protected function createTestResult()
+    {
+        return new TestResult;
+    }
+
+    /**
+     * @param TestSuite $suite
+     * @param array     $arguments
+     */
+    private function processSuiteFilters(TestSuite $suite, array $arguments)
+    {
+        if (!$arguments['filter'] &&
+            empty($arguments['groups']) &&
+            empty($arguments['excludeGroups'])) {
+            return;
+        }
+
+        $filterFactory = new Factory;
+
+        if (!empty($arguments['excludeGroups'])) {
+            $filterFactory->addFilter(
+                new ReflectionClass(ExcludeGroupFilterIterator::class),
+                $arguments['excludeGroups']
+            );
+        }
+
+        if (!empty($arguments['groups'])) {
+            $filterFactory->addFilter(
+                new ReflectionClass(IncludeGroupFilterIterator::class),
+                $arguments['groups']
+            );
+        }
+
+        if ($arguments['filter']) {
+            $filterFactory->addFilter(
+                new ReflectionClass(NameFilterIterator::class),
+                $arguments['filter']
+            );
+        }
+
+        $suite->injectFilter($filterFactory);
+    }
+
+    /**
      * @param Test  $suite
      * @param array $arguments
      * @param bool  $exit
      *
-     * @throws Exception
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
-     * @throws \ReflectionException
-     *
      * @return TestResult
      */
-    public function doRun(Test $suite, array $arguments = [], $exit = true): TestResult
+    public function doRun(Test $suite, array $arguments = [], $exit = true)
     {
         if (isset($arguments['configuration'])) {
             $GLOBALS['__PHPUNIT_CONFIGURATION_FILE'] = $arguments['configuration'];
@@ -167,7 +203,7 @@ class TestRunner extends BaseTestRunner
         }
 
         if ($arguments['beStrictAboutChangesToGlobalState'] === true) {
-            $suite->setBeStrictAboutChangesToGlobalState(true);
+            $suite->setbeStrictAboutChangesToGlobalState(true);
         }
 
         if (\is_int($arguments['repeat']) && $arguments['repeat'] > 0) {
@@ -418,23 +454,20 @@ class TestRunner extends BaseTestRunner
                 $codeCoverage->setDisableIgnoredLines(true);
             }
 
-            $whitelistFromConfigurationFile = false;
-            $whitelistFromOption            = false;
-
             if (isset($arguments['whitelist'])) {
                 $this->codeCoverageFilter->addDirectoryToWhitelist($arguments['whitelist']);
-
-                $whitelistFromOption = true;
             }
 
             if (isset($arguments['configuration'])) {
                 $filterConfiguration = $arguments['configuration']->getFilterConfiguration();
 
-                if (!empty($filterConfiguration['whitelist'])) {
-                    $whitelistFromConfigurationFile = true;
-                }
+                if (empty($filterConfiguration['whitelist'])) {
+                    $this->writeMessage('Error', 'No whitelist is configured, no code coverage will be generated.');
 
-                if (!empty($filterConfiguration['whitelist'])) {
+                    $codeCoverageReports = 0;
+
+                    unset($codeCoverage);
+                } else {
                     $codeCoverage->setAddUncoveredFilesFromWhitelist(
                         $filterConfiguration['whitelist']['addUncoveredFilesFromWhitelist']
                     );
@@ -470,11 +503,7 @@ class TestRunner extends BaseTestRunner
             }
 
             if (isset($codeCoverage) && !$this->codeCoverageFilter->hasWhitelist()) {
-                if (!$whitelistFromConfigurationFile && !$whitelistFromOption) {
-                    $this->writeMessage('Error', 'No whitelist is configured, no code coverage will be generated.');
-                } else {
-                    $this->writeMessage('Error', 'Incorrect whitelist config, no code coverage will be generated.');
-                }
+                $this->writeMessage('Error', 'Incorrect whitelist config, no code coverage will be generated.');
 
                 $codeCoverageReports = 0;
 
@@ -507,6 +536,7 @@ class TestRunner extends BaseTestRunner
 
         $suite->run($result);
 
+        unset($suite);
         $result->flushListeners();
 
         if ($this->printer instanceof ResultPrinter) {
@@ -662,31 +692,9 @@ class TestRunner extends BaseTestRunner
     /**
      * @param ResultPrinter $resultPrinter
      */
-    public function setPrinter(ResultPrinter $resultPrinter): void
+    public function setPrinter(ResultPrinter $resultPrinter)
     {
         $this->printer = $resultPrinter;
-    }
-
-    /**
-     * Returns the loader to be used.
-     *
-     * @return TestSuiteLoader
-     */
-    public function getLoader(): TestSuiteLoader
-    {
-        if ($this->loader === null) {
-            $this->loader = new StandardTestSuiteLoader;
-        }
-
-        return $this->loader;
-    }
-
-    /**
-     * @return TestResult
-     */
-    protected function createTestResult(): TestResult
-    {
-        return new TestResult;
     }
 
     /**
@@ -695,7 +703,7 @@ class TestRunner extends BaseTestRunner
      *
      * @param string $message
      */
-    protected function runFailed($message): void
+    protected function runFailed($message)
     {
         $this->write($message . PHP_EOL);
         exit(self::FAILURE_EXIT);
@@ -704,7 +712,7 @@ class TestRunner extends BaseTestRunner
     /**
      * @param string $buffer
      */
-    protected function write($buffer): void
+    protected function write($buffer)
     {
         if (PHP_SAPI != 'cli' && PHP_SAPI != 'phpdbg') {
             $buffer = \htmlspecialchars($buffer);
@@ -718,11 +726,23 @@ class TestRunner extends BaseTestRunner
     }
 
     /**
-     * @param array $arguments
+     * Returns the loader to be used.
      *
-     * @throws Exception
+     * @return TestSuiteLoader
      */
-    protected function handleConfiguration(array &$arguments): void
+    public function getLoader()
+    {
+        if ($this->loader === null) {
+            $this->loader = new StandardTestSuiteLoader;
+        }
+
+        return $this->loader;
+    }
+
+    /**
+     * @param array $arguments
+     */
+    protected function handleConfiguration(array &$arguments)
     {
         if (isset($arguments['configuration']) &&
             !$arguments['configuration'] instanceof Configuration) {
@@ -1063,51 +1083,10 @@ class TestRunner extends BaseTestRunner
     }
 
     /**
-     * @param TestSuite $suite
-     * @param array     $arguments
-     *
-     * @throws \ReflectionException
-     * @throws \InvalidArgumentException
-     */
-    private function processSuiteFilters(TestSuite $suite, array $arguments): void
-    {
-        if (!$arguments['filter'] &&
-            empty($arguments['groups']) &&
-            empty($arguments['excludeGroups'])) {
-            return;
-        }
-
-        $filterFactory = new Factory;
-
-        if (!empty($arguments['excludeGroups'])) {
-            $filterFactory->addFilter(
-                new ReflectionClass(ExcludeGroupFilterIterator::class),
-                $arguments['excludeGroups']
-            );
-        }
-
-        if (!empty($arguments['groups'])) {
-            $filterFactory->addFilter(
-                new ReflectionClass(IncludeGroupFilterIterator::class),
-                $arguments['groups']
-            );
-        }
-
-        if ($arguments['filter']) {
-            $filterFactory->addFilter(
-                new ReflectionClass(NameFilterIterator::class),
-                $arguments['filter']
-            );
-        }
-
-        $suite->injectFilter($filterFactory);
-    }
-
-    /**
      * @param string $type
      * @param string $message
      */
-    private function writeMessage($type, $message): void
+    private function writeMessage($type, $message)
     {
         if (!$this->messagePrinted) {
             $this->write("\n");

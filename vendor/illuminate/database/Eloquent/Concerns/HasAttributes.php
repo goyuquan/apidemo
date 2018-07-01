@@ -189,10 +189,6 @@ trait HasAttributes
                 ($value === 'date' || $value === 'datetime')) {
                 $attributes[$key] = $this->serializeDate($attributes[$key]);
             }
-
-            if ($attributes[$key] && $this->isCustomDateTimeCast($value)) {
-                $attributes[$key] = $attributes[$key]->format(explode(':', $value, 2)[1]);
-            }
         }
 
         return $attributes;
@@ -318,7 +314,7 @@ trait HasAttributes
         }
 
         // Here we will determine if the model base class itself contains this given key
-        // since we don't want to treat any of those methods as relationships because
+        // since we do not want to treat any of those methods are relationships since
         // they are all intended as helper methods and none of these are relations.
         if (method_exists(self::class, $key)) {
             return;
@@ -411,9 +407,7 @@ trait HasAttributes
         $relation = $this->$method();
 
         if (! $relation instanceof Relation) {
-            throw new LogicException(sprintf(
-                '%s::%s must return a relationship instance.', static::class, $method
-            ));
+            throw new LogicException(get_class($this).'::'.$method.' must return a relationship instance.');
         }
 
         return tap($relation->getResults(), function ($results) use ($method) {
@@ -494,7 +488,6 @@ trait HasAttributes
             case 'date':
                 return $this->asDate($value);
             case 'datetime':
-            case 'custom_datetime':
                 return $this->asDateTime($value);
             case 'timestamp':
                 return $this->asTimestamp($value);
@@ -511,23 +504,7 @@ trait HasAttributes
      */
     protected function getCastType($key)
     {
-        if ($this->isCustomDateTimeCast($this->getCasts()[$key])) {
-            return 'custom_datetime';
-        }
-
         return trim(strtolower($this->getCasts()[$key]));
-    }
-
-    /**
-     * Determine if the cast type is a custom date time cast.
-     *
-     * @param  string  $cast
-     * @return bool
-     */
-    protected function isCustomDateTimeCast($cast)
-    {
-        return strncmp($cast, 'date:', 5) === 0 ||
-               strncmp($cast, 'datetime:', 9) === 0;
     }
 
     /**
@@ -735,7 +712,7 @@ trait HasAttributes
         // the database connection and use that format to create the Carbon object
         // that is returned back out to the developers after we convert it here.
         return Carbon::createFromFormat(
-            str_replace('.v', '.u', $this->getDateFormat()), $value
+            $this->getDateFormat(), $value
         );
     }
 
@@ -758,7 +735,7 @@ trait HasAttributes
      */
     public function fromDateTime($value)
     {
-        return empty($value) ? $value : $this->asDateTime($value)->format(
+        return is_null($value) ? $value : $this->asDateTime($value)->format(
             $this->getDateFormat()
         );
     }
@@ -804,7 +781,7 @@ trait HasAttributes
      *
      * @return string
      */
-    public function getDateFormat()
+    protected function getDateFormat()
     {
         return $this->dateFormat ?: $this->getConnection()->getQueryGrammar()->getDateFormat();
     }
@@ -1052,7 +1029,7 @@ trait HasAttributes
     }
 
     /**
-     * Get the attributes that were changed.
+     * Get the attributes that was changed.
      *
      * @return array
      */

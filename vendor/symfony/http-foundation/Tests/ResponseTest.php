@@ -300,7 +300,7 @@ class ResponseTest extends ResponseTestCase
         $response = new Response();
         $response->headers->set('Cache-Control', 'must-revalidate');
         $response->headers->set('Expires', -1);
-        $this->assertLessThanOrEqual(time() - 2*86400, $response->getExpires()->format('U'));
+        $this->assertEquals('Sat, 01 Jan 00 00:00:00 +0000', $response->getExpires()->format(DATE_RFC822));
 
         $response = new Response();
         $this->assertNull($response->getMaxAge(), '->getMaxAge() returns null if no freshness information available');
@@ -610,12 +610,6 @@ class ResponseTest extends ResponseTestCase
         $response->setCache(array('private' => false));
         $this->assertTrue($response->headers->hasCacheControlDirective('public'));
         $this->assertFalse($response->headers->hasCacheControlDirective('private'));
-
-        $response->setCache(array('immutable' => true));
-        $this->assertTrue($response->headers->hasCacheControlDirective('immutable'));
-
-        $response->setCache(array('immutable' => false));
-        $this->assertFalse($response->headers->hasCacheControlDirective('immutable'));
     }
 
     public function testSendContent()
@@ -637,38 +631,6 @@ class ResponseTest extends ResponseTestCase
         $this->assertFalse($response->headers->hasCacheControlDirective('private'));
     }
 
-    public function testSetImmutable()
-    {
-        $response = new Response();
-        $response->setImmutable();
-
-        $this->assertTrue($response->headers->hasCacheControlDirective('immutable'));
-    }
-
-    public function testIsImmutable()
-    {
-        $response = new Response();
-        $response->setImmutable();
-
-        $this->assertTrue($response->isImmutable());
-    }
-
-    public function testSetDate()
-    {
-        $response = new Response();
-        $response->setDate(\DateTime::createFromFormat(\DateTime::ATOM, '2013-01-26T09:21:56+0100', new \DateTimeZone('Europe/Berlin')));
-
-        $this->assertEquals('2013-01-26T08:21:56+00:00', $response->getDate()->format(\DateTime::ATOM));
-    }
-
-    public function testSetDateWithImmutable()
-    {
-        $response = new Response();
-        $response->setDate(\DateTimeImmutable::createFromFormat(\DateTime::ATOM, '2013-01-26T09:21:56+0100', new \DateTimeZone('Europe/Berlin')));
-
-        $this->assertEquals('2013-01-26T08:21:56+00:00', $response->getDate()->format(\DateTime::ATOM));
-    }
-
     public function testSetExpires()
     {
         $response = new Response();
@@ -682,30 +644,10 @@ class ResponseTest extends ResponseTestCase
         $this->assertEquals($response->getExpires()->getTimestamp(), $now->getTimestamp());
     }
 
-    public function testSetExpiresWithImmutable()
-    {
-        $response = new Response();
-
-        $now = $this->createDateTimeImmutableNow();
-        $response->setExpires($now);
-
-        $this->assertEquals($response->getExpires()->getTimestamp(), $now->getTimestamp());
-    }
-
     public function testSetLastModified()
     {
         $response = new Response();
         $response->setLastModified($this->createDateTimeNow());
-        $this->assertNotNull($response->getLastModified());
-
-        $response->setLastModified(null);
-        $this->assertNull($response->getLastModified());
-    }
-
-    public function testSetLastModifiedWithImmutable()
-    {
-        $response = new Response();
-        $response->setLastModified($this->createDateTimeImmutableNow());
         $this->assertNotNull($response->getLastModified());
 
         $response->setLastModified(null);
@@ -948,13 +890,6 @@ class ResponseTest extends ResponseTestCase
         return $date->setTimestamp(time());
     }
 
-    protected function createDateTimeImmutableNow()
-    {
-        $date = new \DateTimeImmutable();
-
-        return $date->setTimestamp(time());
-    }
-
     protected function provideResponse()
     {
         return new Response();
@@ -989,7 +924,7 @@ class ResponseTest extends ResponseTestCase
 
         $ianaCodesReasonPhrases = array();
 
-        $xpath = new \DOMXPath($ianaHttpStatusCodes);
+        $xpath = new \DomXPath($ianaHttpStatusCodes);
         $xpath->registerNamespace('ns', 'http://www.iana.org/assignments');
 
         $records = $xpath->query('//ns:record');
@@ -1032,4 +967,15 @@ class StringableObject
 
 class DefaultResponse extends Response
 {
+}
+
+class ExtendedResponse extends Response
+{
+    public function setLastModified(\DateTime $date = null)
+    {
+    }
+
+    public function getDate()
+    {
+    }
 }

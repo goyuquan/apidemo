@@ -25,6 +25,9 @@ use Psr\Log\LoggerInterface;
  */
 class Profiler
 {
+    /**
+     * @var ProfilerStorageInterface
+     */
     private $storage;
 
     /**
@@ -32,15 +35,26 @@ class Profiler
      */
     private $collectors = array();
 
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
-    private $initiallyEnabled = true;
+
+    /**
+     * @var bool
+     */
     private $enabled = true;
 
-    public function __construct(ProfilerStorageInterface $storage, LoggerInterface $logger = null, bool $enable = true)
+    /**
+     * Constructor.
+     *
+     * @param ProfilerStorageInterface $storage A ProfilerStorageInterface instance
+     * @param LoggerInterface          $logger  A LoggerInterface instance
+     */
+    public function __construct(ProfilerStorageInterface $storage, LoggerInterface $logger = null)
     {
         $this->storage = $storage;
         $this->logger = $logger;
-        $this->initiallyEnabled = $this->enabled = $enable;
     }
 
     /**
@@ -61,6 +75,8 @@ class Profiler
 
     /**
      * Loads the Profile for the given Response.
+     *
+     * @param Response $response A Response instance
      *
      * @return Profile|false A Profile instance
      */
@@ -87,6 +103,8 @@ class Profiler
 
     /**
      * Saves a Profile.
+     *
+     * @param Profile $profile A Profile instance
      *
      * @return bool
      */
@@ -137,6 +155,10 @@ class Profiler
     /**
      * Collects data for the given Response.
      *
+     * @param Request    $request   A Request instance
+     * @param Response   $response  A Response instance
+     * @param \Exception $exception An exception instance if the request threw one
+     *
      * @return Profile|null A Profile instance or null if the profiler is disabled
      */
     public function collect(Request $request, Response $response, \Exception $exception = null)
@@ -168,14 +190,6 @@ class Profiler
         return $profile;
     }
 
-    public function reset()
-    {
-        foreach ($this->collectors as $collector) {
-            $collector->reset();
-        }
-        $this->enabled = $this->initiallyEnabled;
-    }
-
     /**
      * Gets the Collectors associated with this profiler.
      *
@@ -201,6 +215,8 @@ class Profiler
 
     /**
      * Adds a Collector.
+     *
+     * @param DataCollectorInterface $collector A DataCollectorInterface instance
      */
     public function add(DataCollectorInterface $collector)
     {

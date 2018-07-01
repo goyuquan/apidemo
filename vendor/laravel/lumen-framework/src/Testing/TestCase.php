@@ -104,10 +104,6 @@ abstract class TestCase extends BaseTestCase
     public function tearDown()
     {
         if (class_exists('Mockery')) {
-            if (($container = \Mockery::getContainer()) !== null) {
-                $this->addToAssertionCount($container->mockery_getExpectationCount());
-            }
-
             Mockery::close();
         }
 

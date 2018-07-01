@@ -33,6 +33,8 @@ interface KernelInterface extends HttpKernelInterface, \Serializable
 
     /**
      * Loads the container configuration.
+     *
+     * @param LoaderInterface $loader A LoaderInterface instance
      */
     public function registerContainerConfiguration(LoaderInterface $loader);
 
@@ -56,15 +58,16 @@ interface KernelInterface extends HttpKernelInterface, \Serializable
     public function getBundles();
 
     /**
-     * Returns a bundle.
+     * Returns a bundle and optionally its descendants by its name.
      *
-     * @param string $name Bundle name
+     * @param string $name  Bundle name
+     * @param bool   $first Whether to return the first bundle only or together with its descendants
      *
-     * @return BundleInterface A BundleInterface instance
+     * @return BundleInterface|BundleInterface[] A BundleInterface instance or an array of BundleInterface instances if $first is false
      *
      * @throws \InvalidArgumentException when the bundle is not enabled
      */
-    public function getBundle($name);
+    public function getBundle($name, $first = true);
 
     /**
      * Returns the file path for a given resource.

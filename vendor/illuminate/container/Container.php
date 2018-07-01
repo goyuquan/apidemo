@@ -206,7 +206,7 @@ class Container implements ArrayAccess, ContainerContract
     /**
      * Register a binding with the container.
      *
-     * @param  string  $abstract
+     * @param  string|array  $abstract
      * @param  \Closure|string|null  $concrete
      * @param  bool  $shared
      * @return void
@@ -271,28 +271,13 @@ class Container implements ArrayAccess, ContainerContract
     /**
      * Bind a callback to resolve with Container::call.
      *
-     * @param  array|string  $method
+     * @param  string  $method
      * @param  \Closure  $callback
      * @return void
      */
     public function bindMethod($method, $callback)
     {
-        $this->methodBindings[$this->parseBindMethod($method)] = $callback;
-    }
-
-    /**
-     * Get the method to be bound in class@method format.
-     *
-     * @param  array|string $method
-     * @return string
-     */
-    protected function parseBindMethod($method)
-    {
-        if (is_array($method)) {
-            return $method[0].'@'.$method[1];
-        }
-
-        return $method;
+        $this->methodBindings[$method] = $callback;
     }
 
     /**
@@ -338,7 +323,7 @@ class Container implements ArrayAccess, ContainerContract
     /**
      * Register a shared binding in the container.
      *
-     * @param  string  $abstract
+     * @param  string|array  $abstract
      * @param  \Closure|string|null  $concrete
      * @return void
      */
@@ -951,7 +936,7 @@ class Container implements ArrayAccess, ContainerContract
     /**
      * Register a new resolving callback.
      *
-     * @param  \Closure|string  $abstract
+     * @param  string    $abstract
      * @param  \Closure|null  $callback
      * @return void
      */
@@ -971,8 +956,8 @@ class Container implements ArrayAccess, ContainerContract
     /**
      * Register a new after resolving callback for all types.
      *
-     * @param  \Closure|string  $abstract
-     * @param  \Closure|null  $callback
+     * @param  string   $abstract
+     * @param  \Closure|null $callback
      * @return void
      */
     public function afterResolving($abstract, Closure $callback = null)

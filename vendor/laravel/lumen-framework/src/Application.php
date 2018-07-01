@@ -2,13 +2,15 @@
 
 namespace Laravel\Lumen;
 
+use Monolog\Logger;
 use RuntimeException;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Log\LogManager;
 use Illuminate\Support\Composer;
 use Laravel\Lumen\Routing\Router;
+use Monolog\Handler\StreamHandler;
 use Illuminate\Container\Container;
+use Monolog\Formatter\LineFormatter;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
@@ -56,6 +58,13 @@ class Application extends Container
      * @var array
      */
     protected $ranServiceBinders = [];
+
+    /**
+     * A custom callback used to configure Monolog.
+     *
+     * @var callable|null
+     */
+    protected $monologConfigurator;
 
     /**
      * The application namespace.
@@ -124,7 +133,7 @@ class Application extends Container
      */
     public function version()
     {
-        return 'Lumen (5.6.3) (Laravel Components 5.6.*)';
+        return 'Lumen (5.5.0) (Laravel Components 5.5.*)';
     }
 
     /**
@@ -387,10 +396,25 @@ class Application extends Container
     protected function registerLogBindings()
     {
         $this->singleton('Psr\Log\LoggerInterface', function () {
-            $this->configure('logging');
-
-            return new LogManager($this);
+            if ($this->monologConfigurator) {
+                return call_user_func($this->monologConfigurator, new Logger('lumen'));
+            } else {
+                return new Logger('lumen', [$this->getMonologHandler()]);
+            }
         });
+    }
+
+    /**
+     * Define a callback to be used to configure Monolog.
+     *
+     * @param  callable  $callback
+     * @return $this
+     */
+    public function configureMonologUsing(callable $callback)
+    {
+        $this->monologConfigurator = $callback;
+
+        return $this;
     }
 
     /**
@@ -409,15 +433,14 @@ class Application extends Container
     }
 
     /**
-     * Register container bindings for the application.
+     * Get the Monolog handler for the application.
      *
-     * @return void
+     * @return \Monolog\Handler\AbstractHandler
      */
-    protected function registerRouterBindings()
+    protected function getMonologHandler()
     {
-        $this->singleton('router', function () {
-            return $this->router;
-        });
+        return (new StreamHandler(storage_path('logs/lumen.log'), Logger::DEBUG))
+                            ->setFormatter(new LineFormatter(null, null, true, true));
     }
 
     /**
@@ -636,7 +659,6 @@ class Application extends Container
             'Illuminate\Support\Facades\Gate' => 'Gate',
             'Illuminate\Support\Facades\Log' => 'Log',
             'Illuminate\Support\Facades\Queue' => 'Queue',
-            'Illuminate\Support\Facades\Route' => 'Route',
             'Illuminate\Support\Facades\Schema' => 'Schema',
             'Illuminate\Support\Facades\URL' => 'URL',
             'Illuminate\Support\Facades\Validator' => 'Validator',
@@ -817,8 +839,6 @@ class Application extends Container
             'Illuminate\Contracts\Queue\Factory' => 'queue',
             'Illuminate\Contracts\Queue\Queue' => 'queue.connection',
             'request' => 'Illuminate\Http\Request',
-            'Laravel\Lumen\Routing\Router' => 'router',
-            'Illuminate\Contracts\Translation\Translator' => 'translator',
             'Laravel\Lumen\Routing\UrlGenerator' => 'url',
             'Illuminate\Contracts\Validation\Factory' => 'validator',
             'Illuminate\Contracts\View\Factory' => 'view',
@@ -860,7 +880,6 @@ class Application extends Container
         'queue.connection' => 'registerQueueBindings',
         'Illuminate\Contracts\Queue\Factory' => 'registerQueueBindings',
         'Illuminate\Contracts\Queue\Queue' => 'registerQueueBindings',
-        'router' => 'registerRouterBindings',
         'Psr\Http\Message\ServerRequestInterface' => 'registerPsrRequestBindings',
         'Psr\Http\Message\ResponseInterface' => 'registerPsrResponseBindings',
         'translator' => 'registerTranslationBindings',
