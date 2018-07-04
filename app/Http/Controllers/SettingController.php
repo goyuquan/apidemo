@@ -26,6 +26,7 @@ class SettingController extends Controller
 
     public function optionConfig($id)
     {
+        return 333;
         try {
             $option = Option::findOrFail($id)->first();
             return response()->json([ 'data' => $order], 200 );
