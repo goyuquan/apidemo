@@ -26,14 +26,8 @@ class SettingController extends Controller
 
     public function optionConfig($id)
     {
-        return 333;
-        try {
-            $option = Option::findOrFail($id)->first();
-            return response()->json([ 'data' => $order], 200 );
-        } catch (Exception $e) {
-            $user = null;
-            return response()->json([ 'message' => $e ], 500 );
-        }
+        $option = Option::where('column', $id)->get();
+        return response()->json([ 'data' => $option], 200 );
     }
 
 
