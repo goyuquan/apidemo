@@ -9,18 +9,43 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Carbon;
 
-
 class SettingController extends Controller
 {
 
     public function option()
     {
-        $options = DB::select("
+        $columns = DB::select("
         select distinct COLUMN_NAME
         from information_schema.columns
         where TABLE_SCHEMA='api'
         ");
-        return response()->json(['data' => $options], 200);
+
+        $options = Option::all(['column', 'option']);
+
+        $data = (object)[];
+        $data->columns = $columns;
+
+        foreach ($data->columns as $v) {
+          $item = array();
+          // echo "column___".$v->COLUMN_NAME."</br>";
+          foreach ($options as $k => $w) {
+            if ($v->COLUMN_NAME === $w->column) {
+              // echo "column___".$v->COLUMN_NAME."</br>";
+              // echo "option___".$w->column."</br>";
+              array_push($item, $w->option);
+            }
+          }
+
+          if (count($item) > 0) {
+            $v->item = $item;
+          }
+        }
+
+        $con = array('data' => $data);
+
+        return response()->json([
+          'data' => $con,
+        ], 200);
     }
 
 
