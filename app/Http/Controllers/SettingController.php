@@ -27,24 +27,18 @@ class SettingController extends Controller
 
         foreach ($data->columns as $v) {
           $item = array();
-          // echo "column___".$v->COLUMN_NAME."</br>";
           foreach ($options as $k => $w) {
             if ($v->COLUMN_NAME === $w->column) {
-              // echo "column___".$v->COLUMN_NAME."</br>";
-              // echo "option___".$w->column."</br>";
               array_push($item, $w->option);
             }
           }
-
           if (count($item) > 0) {
             $v->item = $item;
           }
         }
 
-        $con = array('data' => $data);
-
         return response()->json([
-          'data' => $con,
+          'data' => $data,
         ], 200);
     }
 
@@ -73,6 +67,58 @@ class SettingController extends Controller
         return response()->json([
             'data' => $option,
         ], $statusCode );
+    }
+
+
+    public function optionDelete($id)
+    {
+
+      $response = array();
+      try {
+        $option = Option::findOrFail($id);
+        $option->delete();
+        $statusCode = 200;
+        $response['data'] = $option;
+      } catch (\Exception $e) {
+        $statusCode = 404;
+        $response['message'] = "找不到资源";
+      }
+
+      return response($response, $statusCode );
+    }
+
+
+    public function optionUpdate(Request $request, $userId)
+    {
+      try {
+        $user = self::userExist($userId);
+        $user->update($request->only('name', 'password'));
+        $statusCode = 200;
+      } catch(\Exception $e) {
+        $user = null;
+        $statusCode = 404;
+      }
+
+      return response([
+        "data" => $user,
+        "status" => $user ? "success" : "Not found."
+      ], $statusCode);
+    }
+
+
+    public function optionGet($id)
+    {
+      $response = array();
+      try {
+        $option = Option::findOrFail($id);
+        $statusCode = 200;
+        $response['data'] = $option;
+      } catch (\Exception $e) {
+        $statusCode = 404;
+        $response['message'] = "找不到资源";
+      }
+
+      return response($response, $statusCode );
     }
 
 
