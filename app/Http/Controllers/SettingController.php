@@ -12,7 +12,7 @@ use Illuminate\Support\Carbon;
 class SettingController extends Controller
 {
 
-    public function option()
+    public function columns()
     {
         $columns = DB::select("
         select distinct COLUMN_NAME
@@ -45,13 +45,23 @@ class SettingController extends Controller
 
     public function optionConfig($id)
     {
-        $option = Option::where('column', $id)->get();
-        return response()->json([ 'data' => $option], 200 );
+        $response = array();
+        try {
+          $option = Option::where('column', $id)->orderBy('id', 'desc')->get(['id', 'option', 'column']);
+          $statusCode = 200;
+          $response['data'] = $option;
+        } catch (\Exception $e) {
+          $statusCode = 404;
+          $response['message'] = "找不到资源";
+        }
+        return response()->json($response, $statusCode);
     }
 
 
     public function optionCreate(Request $request)
     {
+        $response = array();
+
         $this->validate($request, [
             'column' => 'required',
             'option' => 'required'
@@ -62,47 +72,71 @@ class SettingController extends Controller
             'option' => $request->input('option')
         ];
 
-        $option = Option::create($data);
-        $statusCode = $option ? 200 : 422;
-        return response()->json([
-            'data' => $option,
-        ], $statusCode );
+        try {
+          $option = Option::create($data);
+          $statusCode = 200;
+          $response['message'] = "创建成功";
+          $response['bar'] = true;
+        } catch (\Exception $e) {
+          $statusCode = 450;
+          $response['message'] = "创建失败";
+        }
+
+        return response()->json($response, $statusCode);
     }
 
 
     public function optionDelete($id)
     {
-
       $response = array();
+
       try {
         $option = Option::findOrFail($id);
-        $option->delete();
-        $statusCode = 200;
-        $response['data'] = $option;
+        $statusCode = 100;
       } catch (\Exception $e) {
         $statusCode = 404;
         $response['message'] = "找不到资源";
       }
 
-      return response($response, $statusCode );
+      if ($statusCode === 100) {
+        try {
+          $option->delete();
+          $statusCode = 200;
+          $response['data'] = $option;
+          $response['bar'] = true;
+        } catch (\Exception $e) {
+          $statusCode = 404;
+          $response['message'] = 'delete error';
+        }
+      }
+
+      return response()->json($response, $statusCode);
     }
 
 
-    public function optionUpdate(Request $request, $userId)
+    public function optionUpdate(Request $request, $id)
     {
+      $response = array();
       try {
-        $user = self::userExist($userId);
-        $user->update($request->only('name', 'password'));
-        $statusCode = 200;
-      } catch(\Exception $e) {
-        $user = null;
+        $option = Option::findOrFail($id);
+        $statusCode = 100;
+      } catch (\Exception $e) {
         $statusCode = 404;
+        $response['message'] = "找不到资源";
       }
-
-      return response([
-        "data" => $user,
-        "status" => $user ? "success" : "Not found."
-      ], $statusCode);
+      if ($statusCode === 100) {
+        try {
+          $option->option = $request->input('option');
+          $option->save();
+          $statusCode = 200;
+          $response['message'] = "修改成功";
+          $response['bar'] = true;
+        } catch (\Exception $e) {
+          $statusCode = 404;
+          $response['message'] = '修改失败';
+        }
+      }
+      return response()->json($response, $statusCode);
     }
 
 
@@ -110,15 +144,14 @@ class SettingController extends Controller
     {
       $response = array();
       try {
-        $option = Option::findOrFail($id);
+        $option = Option::findOrFail($id, ['id', 'option']);
         $statusCode = 200;
         $response['data'] = $option;
       } catch (\Exception $e) {
         $statusCode = 404;
         $response['message'] = "找不到资源";
       }
-
-      return response($response, $statusCode );
+      return response()->json($response, $statusCode);
     }
 
 
