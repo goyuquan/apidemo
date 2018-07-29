@@ -22,5 +22,10 @@ class Product extends Model implements AuthenticatableContract, AuthorizableCont
         'describe'
     ];
 
+    public function option()
+    {
+        return $this->belongsTo('App\Option');
+    }
+
 
 }

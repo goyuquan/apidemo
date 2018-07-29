@@ -14,20 +14,28 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = DB::table('products')->select(
-            'id',
-            'status',
-            'name',
-            'price',
-            'unit',
-            'origin',
-            'img_id',
-            'created_at',
-            'updated_at'
-            )->get();
-        return response()->json([
-            'data' => $products->toArray()
-        ], 200);
+      $response = array();
+      try {
+        $products = DB::table('products')
+        ->leftJoin('options', 'products.origin', '=', 'options.id')
+        ->get([
+          'products.id',
+          'products.status',
+          'products.name',
+          'products.price',
+          'products.unit',
+          'products.img_id',
+          'products.created_at',
+          'products.updated_at',
+          'options.option as origin'
+        ]);
+        $statusCode = 200;
+        $response['data'] = $products;
+      } catch (\Exception $e) {
+        $statusCode = 404;
+        $response['message'] = "找不到资源";
+      }
+      return response()->json($response, $statusCode);
     }
 
 
@@ -97,69 +105,5 @@ class ProductController extends Controller
             $statusCode = 404;
             return response()->json([ 'message' => $e ], $statusCode );
         }
-
     }
-
-
-    public function delete($userId)
-    {
-        try {
-            $user = self::userExist($userId);
-            $user->delete();
-            $statusCode = 200;
-        } catch(\Exception $e) {
-            $user = null;
-            $statusCode = 404;
-        }
-
-        return response([
-                "data" => $user,
-                "status" => $user ? "success" : "Not found."
-            ], $statusCode );
-    }
-
-
-    protected static function userExist($id)
-    {
-        return User::findOrFail($id);
-    }
-
-
-    public function login(Request $request)
-    {
-        $this->validate($request, [
-            'phone' => 'required',
-            'password' => 'required'
-        ]);
-
-        $user = User::where('phone', $request->input('phone'))->first();
-
-        if(Hash::check($request->input('password'), $user->password)){
-            $token = base64_encode(str_random(40));
-            User::where('phone', $request->input('phone'))
-                        ->update(['remember_token' => $token]);
-
-            return response()->json([
-                            'status' => 'success',
-                            'data' => $user], 200)
-                            ->withHeaders([
-                                'Authorization' => $token,
-                            ]);
-        }else{
-            return response()->json([
-                'status' => 'fail',
-                'message' => '账号密码不匹配'
-            ], 401);
-        }
-    }
-
-
-    public function logout($id)
-    {
-        if(User::where('id', $id)->update(['remember_token' => '']))
-        {
-            return response()->json(['status' => 'success'], 200);
-        }
-    }
-
 }

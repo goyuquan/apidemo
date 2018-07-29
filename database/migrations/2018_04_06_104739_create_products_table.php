@@ -19,7 +19,7 @@ class CreateProductsTable extends Migration
             $table->string('name');
             $table->float('price', 8, 2);
             $table->string('unit');
-            $table->string('origin');
+            $table->unsignedTinyInteger('origin');
             $table->string('img_id');
             $table->text('describe');
             $table->timestamps();

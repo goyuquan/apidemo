@@ -16,6 +16,4 @@ class Option extends Model implements AuthenticatableContract, AuthorizableContr
         'column',
         'option',
     ];
-
-
 }
