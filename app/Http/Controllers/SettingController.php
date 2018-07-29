@@ -12,36 +12,58 @@ use Illuminate\Support\Carbon;
 class SettingController extends Controller
 {
 
-    public function columns()
-    {
-        $columns = DB::select("
-        select distinct COLUMN_NAME
-        from information_schema.columns
-        where TABLE_SCHEMA='api'
-        ");
+  public function columns()
+  {
+    $response = array();
 
-        $options = Option::all(['column', 'option']);
-
-        $data = (object)[];
-        $data->columns = $columns;
-
-        foreach ($data->columns as $v) {
-          $item = array();
-          foreach ($options as $k => $w) {
-            if ($v->COLUMN_NAME === $w->column) {
-              array_push($item, $w->option);
-            }
-          }
-          if (count($item) > 0) {
-            $v->item = $item;
-          }
-        }
-
-        return response()->json([
-          'data' => $data,
-        ], 200);
+    try {
+      $columns = DB::select("
+      select distinct COLUMN_NAME
+      from information_schema.columns
+      where TABLE_SCHEMA='api'
+      and COLUMN_NAME not in ('id', 'created_at', 'updated_at', 'remember_token', 'password')
+      and COLUMN_NAME not like '%_id'
+      ");
+      $statusCode = 100;
+    } catch (\Exception $e) {
+      $statusCode = 404;
+      $response['message'] = "找不到资源";
     }
 
+    if ($statusCode === 100) {
+      try {
+        $options = Option::all(['column', 'option']);
+        $statusCode = 100;
+      } catch (\Exception $e) {
+        $statusCode = 404;
+        $response['message'] = "找不到资源";
+      }
+    }
+
+    try {
+      $data = (object)[];
+      $data->columns = $columns;
+
+      foreach ($data->columns as $v) {
+        $item = array();
+        foreach ($options as $k => $w) {
+          if ($v->COLUMN_NAME === $w->column) {
+            array_push($item, $w->option);
+          }
+        }
+        if (count($item) > 0) {
+          $v->item = $item;
+        }
+      }
+
+      $statusCode = 200;
+      $response['data'] = $data;
+    } catch (\Exception $e) {
+      $statusCode = 500;
+      $response['message'] = "服务器错误";
+    }
+
+<<<<<<< HEAD
 
     public function optionAll()
     {
@@ -70,102 +92,131 @@ class SettingController extends Controller
         }
         return response()->json($response, $statusCode);
     }
+=======
+    return response()->json($response, $statusCode);
+  }
+>>>>>>> b4dac2faa48f6d77d139b5342382dd84ccc04e1c
 
 
-    public function optionCreate(Request $request)
-    {
-        $response = array();
+  public function optionConfig($id)
+  {
+    $response = array();
 
-        $this->validate($request, [
-            'column' => 'required',
-            'option' => 'required'
-        ]);
-
-        $data = [
-            'column' => $request->input('column'),
-            'option' => $request->input('option')
-        ];
-
-        try {
-          $option = Option::create($data);
-          $statusCode = 200;
-          $response['message'] = "创建成功";
-          $response['bar'] = true;
-        } catch (\Exception $e) {
-          $statusCode = 450;
-          $response['message'] = "创建失败";
-        }
-
-        return response()->json($response, $statusCode);
+    try {
+      $option = Option::where('column', $id)->orderBy('id', 'desc')->get(['id', 'option', 'column']);
+      $statusCode = 200;
+      $response['data'] = $option;
+    } catch (\Exception $e) {
+      $statusCode = 404;
+      $response['message'] = "找不到资源";
     }
 
+    return response()->json($response, $statusCode);
+  }
 
-    public function optionDelete($id)
-    {
-      $response = array();
 
-      try {
-        $option = Option::findOrFail($id);
-        $statusCode = 100;
-      } catch (\Exception $e) {
-        $statusCode = 404;
-        $response['message'] = "找不到资源";
-      }
+  public function optionCreate(Request $request)
+  {
+    $response = array();
 
-      if ($statusCode === 100) {
-        try {
-          $option->delete();
-          $statusCode = 200;
-          $response['data'] = $option;
-          $response['bar'] = true;
-        } catch (\Exception $e) {
-          $statusCode = 404;
-          $response['message'] = 'delete error';
-        }
-      }
+    $this->validate($request, [
+      'column' => 'required',
+      'option' => 'required'
+    ]);
+    $data = [
+      'column' => $request->input('column'),
+      'option' => $request->input('option')
+    ];
 
-      return response()->json($response, $statusCode);
+    try {
+      $option = Option::create($data);
+      $statusCode = 200;
+      $response['message'] = "创建成功";
+      $response['bar'] = true;
+    } catch (\Exception $e) {
+      $statusCode = 450;
+      $response['message'] = "创建失败";
     }
 
+    return response()->json($response, $statusCode);
+  }
 
-    public function optionUpdate(Request $request, $id)
-    {
-      $response = array();
-      try {
-        $option = Option::findOrFail($id);
-        $statusCode = 100;
-      } catch (\Exception $e) {
-        $statusCode = 404;
-        $response['message'] = "找不到资源";
-      }
-      if ($statusCode === 100) {
-        try {
-          $option->option = $request->input('option');
-          $option->save();
-          $statusCode = 200;
-          $response['message'] = "修改成功";
-          $response['bar'] = true;
-        } catch (\Exception $e) {
-          $statusCode = 404;
-          $response['message'] = '修改失败';
-        }
-      }
-      return response()->json($response, $statusCode);
+
+  public function optionDelete($id)
+  {
+    $response = array();
+
+    try {
+      $option = Option::findOrFail($id);
+      $statusCode = 100;
+    } catch (\Exception $e) {
+      $statusCode = 404;
+      $response['message'] = "找不到资源";
     }
 
-
-    public function optionGet($id)
-    {
-      $response = array();
+    if ($statusCode === 100) {
       try {
-        $option = Option::findOrFail($id, ['id', 'option']);
+        $option->delete();
         $statusCode = 200;
         $response['data'] = $option;
+        $response['bar'] = true;
       } catch (\Exception $e) {
         $statusCode = 404;
-        $response['message'] = "找不到资源";
+        $response['message'] = 'delete error';
       }
-      return response()->json($response, $statusCode);
     }
 
+<<<<<<< HEAD
+=======
+    return response()->json($response, $statusCode);
+  }
+
+
+  public function optionUpdate(Request $request, $id)
+  {
+    $response = array();
+
+    try {
+      $option = Option::findOrFail($id);
+      $statusCode = 100;
+    } catch (\Exception $e) {
+      $statusCode = 404;
+      $response['message'] = "找不到资源";
+    }
+
+    if ($statusCode === 100) {
+      try {
+        $option->option = $request->input('option');
+        $option->save();
+        $statusCode = 200;
+        $response['message'] = "修改成功";
+        $response['bar'] = true;
+      } catch (\Exception $e) {
+        $statusCode = 404;
+        $response['message'] = '修改失败';
+      }
+    }
+
+    return response()->json($response, $statusCode);
+  }
+
+
+  public function optionGet($id)
+  {
+    $response = array();
+
+    try {
+      $option = Option::findOrFail($id, ['id', 'option']);
+      $statusCode = 200;
+      $response['data'] = $option;
+    } catch (\Exception $e) {
+      $statusCode = 404;
+      $response['message'] = "找不到资源";
+    }
+
+    return response()->json($response, $statusCode);
+  }
+
+
+>>>>>>> b4dac2faa48f6d77d139b5342382dd84ccc04e1c
 }
