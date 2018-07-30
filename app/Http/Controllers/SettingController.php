@@ -100,7 +100,6 @@ class SettingController extends Controller
     try {
       $option = Option::create($data);
       $statusCode = 200;
-      $response['message'] = "创建成功";
       $response['bar'] = true;
     } catch (\Exception $e) {
       $statusCode = 450;
@@ -131,7 +130,7 @@ class SettingController extends Controller
         $response['bar'] = true;
       } catch (\Exception $e) {
         $statusCode = 404;
-        $response['message'] = 'delete error';
+        $response['message'] = '删除错误';
       }
     }
 
@@ -156,7 +155,6 @@ class SettingController extends Controller
         $option->option = $request->input('option');
         $option->save();
         $statusCode = 200;
-        $response['message'] = "修改成功";
         $response['bar'] = true;
       } catch (\Exception $e) {
         $statusCode = 404;
