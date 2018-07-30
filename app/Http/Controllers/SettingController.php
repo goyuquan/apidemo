@@ -63,8 +63,39 @@ class SettingController extends Controller
       $response['message'] = "服务器错误";
     }
 
+<<<<<<< HEAD
+
+    public function optionAll()
+    {
+        $response = array();
+        try {
+          $option = Option::all(['option', 'column']);
+          $statusCode = 200;
+          $response['data'] = $option;
+        } catch (\Exception $e) {
+          $statusCode = 404;
+          $response['message'] = "找不到资源";
+        }
+        return response()->json($response, $statusCode);
+    }
+
+    public function optionConfig($id)
+    {
+        $response = array();
+        try {
+          $option = Option::where('column', $id)->orderBy('id', 'desc')->get(['id', 'option', 'column']);
+          $statusCode = 200;
+          $response['data'] = $option;
+        } catch (\Exception $e) {
+          $statusCode = 404;
+          $response['message'] = "找不到资源";
+        }
+        return response()->json($response, $statusCode);
+    }
+=======
     return response()->json($response, $statusCode);
   }
+>>>>>>> b4dac2faa48f6d77d139b5342382dd84ccc04e1c
 
 
   public function optionConfig($id)
@@ -134,6 +165,8 @@ class SettingController extends Controller
       }
     }
 
+<<<<<<< HEAD
+=======
     return response()->json($response, $statusCode);
   }
 
@@ -183,4 +216,5 @@ class SettingController extends Controller
   }
 
 
+>>>>>>> b4dac2faa48f6d77d139b5342382dd84ccc04e1c
 }

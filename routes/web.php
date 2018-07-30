@@ -49,6 +49,10 @@ $router->group([ 'prefix' => '/api' ], function ($router) {
         });
     });
 
+    $router->group([ 'prefix' => '/init' ], function ($router) {
+      $router->get('/options', 'SettingController@optionAll');
+    });
+
     $router->group([ 'prefix' => '/auth' ], function ($router) {
         $router->get('/login','UserController@login');
         $router->get('/logout/{id}','UserController@logout');
