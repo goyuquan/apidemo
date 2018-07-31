@@ -18,7 +18,7 @@ $router->get('/', function () use ($router) {
 
 $router->group([ 'prefix' => '/api' ], function ($router) {
 
-    $router->group(['middleware' => ['auth', 'after']], function () use ($router) {
+    // $router->group(['middleware' => ['auth', 'after']], function () use ($router) {
         $router->get('/users/list', 'UserController@index');
 
         $router->group([ 'prefix' => '/order' ], function ($router) {
@@ -47,7 +47,7 @@ $router->group([ 'prefix' => '/api' ], function ($router) {
             $router->put('/{id}', 'OptionController@update');
             $router->delete('/{id}', 'OptionController@delete');
         });
-    });
+    // });
 
     $router->group([ 'prefix' => '/init' ], function ($router) {
       $router->get('/options', 'SettingController@optionAll');
@@ -59,7 +59,7 @@ $router->group([ 'prefix' => '/api' ], function ($router) {
     });
 
     $router->group([ 'prefix' => '/user' ], function ($router) {
-        $router->post('/', 'UserController@store');
+        $router->get('/', 'UserController@index');
         $router->get('/{id}', 'UserController@show');
         $router->put('/{id}', 'UserController@update');
         $router->delete('/{id}', 'UserController@delete');

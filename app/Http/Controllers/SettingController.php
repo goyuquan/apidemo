@@ -14,106 +14,66 @@ class SettingController extends Controller
 
   public function columns()
   {
-    $response = array();
+      $response = array();
 
-    try {
-      $columns = DB::select("
-      select distinct COLUMN_NAME
-      from information_schema.columns
-      where TABLE_SCHEMA='api'
-      and COLUMN_NAME not in ('id', 'created_at', 'updated_at', 'remember_token', 'password')
-      and COLUMN_NAME not like '%_id'
-      ");
-      $statusCode = 100;
-    } catch (\Exception $e) {
-      $statusCode = 404;
-      $response['message'] = "找不到资源";
-    }
-
-    if ($statusCode === 100) {
       try {
+        $columns = DB::select("
+        select distinct COLUMN_NAME
+        from information_schema.columns
+        where TABLE_SCHEMA='api'
+        ");
         $options = Option::all(['column', 'option']);
-        $statusCode = 100;
+        $data = (object)[];
+        $data->columns = $columns;
+        foreach ($data->columns as $v) {
+          $item = array();
+          foreach ($options as $k => $w) {
+            if ($v->COLUMN_NAME === $w->column) {
+              array_push($item, $w->option);
+            }
+          }
+          if (count($item) > 0) {
+            $v->item = $item;
+          }
+        }
+
+        $statusCode = 200;
+        $response['data'] = $data;
       } catch (\Exception $e) {
         $statusCode = 404;
         $response['message'] = "找不到资源";
       }
-    }
 
-    try {
-      $data = (object)[];
-      $data->columns = $columns;
-
-      foreach ($data->columns as $v) {
-        $item = array();
-        foreach ($options as $k => $w) {
-          if ($v->COLUMN_NAME === $w->column) {
-            array_push($item, $w->option);
-          }
-        }
-        if (count($item) > 0) {
-          $v->item = $item;
-        }
-      }
-
-      $statusCode = 200;
-      $response['data'] = $data;
-    } catch (\Exception $e) {
-      $statusCode = 500;
-      $response['message'] = "服务器错误";
-    }
-
-<<<<<<< HEAD
-
-    public function optionAll()
-    {
-        $response = array();
-        try {
-          $option = Option::all(['option', 'column']);
-          $statusCode = 200;
-          $response['data'] = $option;
-        } catch (\Exception $e) {
-          $statusCode = 404;
-          $response['message'] = "找不到资源";
-        }
-        return response()->json($response, $statusCode);
-    }
-
-    public function optionConfig($id)
-    {
-        $response = array();
-        try {
-          $option = Option::where('column', $id)->orderBy('id', 'desc')->get(['id', 'option', 'column']);
-          $statusCode = 200;
-          $response['data'] = $option;
-        } catch (\Exception $e) {
-          $statusCode = 404;
-          $response['message'] = "找不到资源";
-        }
-        return response()->json($response, $statusCode);
-    }
-=======
-    return response()->json($response, $statusCode);
+      return response()->json($response, $statusCode);
   }
->>>>>>> b4dac2faa48f6d77d139b5342382dd84ccc04e1c
 
+  public function optionAll()
+  {
+      $response = array();
+      try {
+        $option = Option::all(['option', 'column']);
+        $statusCode = 200;
+        $response['data'] = $option;
+      } catch (\Exception $e) {
+        $statusCode = 404;
+        $response['message'] = "找不到资源";
+      }
+      return response()->json($response, $statusCode);
+  }
 
   public function optionConfig($id)
   {
-    $response = array();
-
-    try {
-      $option = Option::where('column', $id)->orderBy('id', 'desc')->get(['id', 'option', 'column']);
-      $statusCode = 200;
-      $response['data'] = $option;
-    } catch (\Exception $e) {
-      $statusCode = 404;
-      $response['message'] = "找不到资源";
-    }
-
-    return response()->json($response, $statusCode);
+      $response = array();
+      try {
+        $option = Option::where('column', $id)->orderBy('id', 'desc')->get(['id', 'option', 'column']);
+        $statusCode = 200;
+        $response['data'] = $option;
+      } catch (\Exception $e) {
+        $statusCode = 404;
+        $response['message'] = "找不到资源";
+      }
+      return response()->json($response, $statusCode);
   }
-
 
   public function optionCreate(Request $request)
   {
@@ -165,8 +125,6 @@ class SettingController extends Controller
       }
     }
 
-<<<<<<< HEAD
-=======
     return response()->json($response, $statusCode);
   }
 
@@ -215,6 +173,4 @@ class SettingController extends Controller
     return response()->json($response, $statusCode);
   }
 
-
->>>>>>> b4dac2faa48f6d77d139b5342382dd84ccc04e1c
 }
